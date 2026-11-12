@@ -3,12 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Survei Pelayanan - Buku Tamu Digital</title>
+    <title>Survei Pelayanan | Buku Tamu Digital</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --navy: #12294a;
+            --navy-dark: #0b1b33;
+            --navy-light: #1f4172;
+            --gold: #c9a24d;
+            --gold-light: #e8d5a3;
+            --gold-dark: #a9822f;
+            --ivory: #fbf8f1;
+            --text: #1e293b;
+            --muted: #64748b;
+            --line: rgba(18, 41, 74, 0.10);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -17,229 +31,325 @@
 
         body {
             min-height: 100vh;
-            padding: 25px;
+            padding: 24px;
             display: flex;
             justify-content: center;
             align-items: center;
-            background:
-                radial-gradient(circle at top left, #eadbd2, transparent 35%),
-                #f4eee8;
             font-family: 'DM Sans', sans-serif;
-            color: #332a29;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 8% 12%, rgba(31, 65, 114, .16) 0, transparent 30%),
+                radial-gradient(circle at 92% 88%, rgba(201, 162, 77, .22) 0, transparent 32%),
+                radial-gradient(rgba(18, 41, 74, .07) 1px, transparent 1px),
+                #f1ede4;
+            background-size: auto, auto, 22px 22px, auto;
+            background-attachment: fixed;
         }
 
+        /* LINGKARAN DEKORASI */
+        .decoration {
+            position: fixed;
+            border: 1px solid rgba(201, 162, 77, .45);
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .decoration.one { width: 340px; height: 340px; top: -140px; left: -110px; }
+        .decoration.two { width: 440px; height: 440px; bottom: -170px; right: -110px; }
+
+        /* KARTU UTAMA */
         .container {
             width: 100%;
-            max-width: 650px;
-            background: #fffaf4;
-            border-radius: 25px;
+            max-width: 680px;
+            position: relative;
+            z-index: 1;
             overflow: hidden;
-            box-shadow: 0 18px 50px rgba(65, 30, 30, .14);
-            border: 1px solid #eaded6;
+            border-radius: 28px;
+            background: var(--ivory);
+            border: 1px solid var(--line);
+            box-shadow: 0 30px 80px rgba(11, 27, 51, .20);
+            animation: muncul .8s ease both;
         }
 
         .top-line {
-            height: 7px;
-            background: linear-gradient(90deg, #4f101d, #c69b55, #781f2b);
+            height: 8px;
+            background: linear-gradient(90deg, var(--navy-dark), var(--gold), var(--navy-light));
         }
 
+        /* HEADER */
         .header {
             display: flex;
             align-items: center;
-            gap: 15px;
-            padding: 25px 30px;
-            border-bottom: 1px solid #eee3da;
+            gap: 16px;
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--line);
         }
 
-        /* TOMBOL PANAH KEMBALI (ikon SVG agar tepat di tengah) */
         .back {
-            width: 42px;
-            height: 42px;
+            width: 44px;
+            height: 44px;
             flex-shrink: 0;
-            display: inline-flex;
+            display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 12px;
-            background: #f5e9e7;
-            color: #781f2b;
+            border-radius: 50%;
+            color: var(--navy-dark);
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            box-shadow: 0 6px 16px rgba(0, 0, 0, .22);
             text-decoration: none;
-            transition: .2s;
+            transition: transform .25s;
         }
 
         .back:hover {
-            background: #efdcd9;
+            transform: translateX(-3px);
         }
 
-        /* IKON PANAH */
+        .back:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--gold);
+        }
+
         .arrow {
-            width: 1.15em;
-            height: 1.15em;
+            width: 22px;
+            height: 22px;
             flex-shrink: 0;
             display: block;
             fill: none;
             stroke: currentColor;
-            stroke-width: 2.4;
+            stroke-width: 2.6;
             stroke-linecap: round;
             stroke-linejoin: round;
         }
 
-        .back .arrow {
-            width: 22px;
-            height: 22px;
-        }
-
         .header h2 {
-            color: #4f101d;
-            font-size: 20px;
+            color: var(--navy);
+            font-size: 21px;
             font-weight: 800;
             line-height: 1.2;
         }
 
+        /* ISI */
         .content {
-            padding: 35px 45px 40px;
+            padding: 38px 52px 42px;
             text-align: center;
         }
 
         .illustration {
-            width: 115px;
-            height: 115px;
-            margin: 0 auto 25px;
-            border-radius: 50%;
-            background: #f7e9e5;
+            width: 112px;
+            height: 112px;
+            margin: 0 auto 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 65px;
+            border-radius: 50%;
+            font-size: 58px;
+            background: rgba(201, 162, 77, .16);
+            border: 1px solid rgba(201, 162, 77, .45);
+            box-shadow: 0 0 0 10px rgba(201, 162, 77, .08);
         }
 
         .title {
-            color: #781f2b;
-            font-family: 'Playfair Display', serif;
-            font-size: 32px;
             margin-bottom: 12px;
+            color: var(--navy);
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(32px, 4vw, 42px);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -1px;
         }
 
         .description {
-            color: #665b58;
-            font-size: 16px;
-            line-height: 1.7;
-            margin-bottom: 25px;
+            margin-bottom: 28px;
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.8;
         }
 
+        /* BINTANG */
         .rating-label {
-            font-weight: 700;
-            color: #4f101d;
             margin-bottom: 12px;
+            color: var(--navy);
+            font-size: 15px;
+            font-weight: 800;
         }
 
         .stars {
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 14px;
             margin-bottom: 12px;
         }
 
         .star {
             border: none;
             background: transparent;
-            font-size: 39px;
-            color: #d8d0c8;
+            font-size: 42px;
+            line-height: 1;
+            color: #d9dde5;
             cursor: pointer;
-            transition: .2s;
+            transition: transform .2s, color .2s;
         }
 
         .star.active {
-            color: #f5a623;
+            color: var(--gold);
             transform: scale(1.12);
+            text-shadow: 0 4px 12px rgba(201, 162, 77, .45);
         }
 
         .star:hover {
-            transform: scale(1.18);
+            transform: scale(1.2);
+        }
+
+        .star:focus-visible {
+            outline: none;
+            border-radius: 10px;
+            box-shadow: 0 0 0 3px var(--gold);
         }
 
         .rating-help {
-            color: #827772;
-            font-size: 13px;
             margin-bottom: 30px;
+            color: #94a3b8;
+            font-size: 13px;
         }
 
+        .rating-help.terpilih {
+            color: var(--gold-dark);
+            font-weight: 700;
+        }
+
+        /* SARAN */
         .suggestion {
+            margin-bottom: 28px;
             text-align: left;
-            margin-bottom: 25px;
         }
 
         .suggestion label {
             display: block;
+            margin-bottom: 10px;
+            color: var(--navy);
             font-size: 14px;
             font-weight: 700;
-            color: #4f101d;
-            margin-bottom: 10px;
         }
 
         .suggestion textarea {
             width: 100%;
             min-height: 120px;
+            padding: 15px 18px;
             resize: vertical;
-            padding: 15px;
-            border: 1px solid #e3d8d1;
-            border-radius: 12px;
+            border: 1px solid rgba(18, 41, 74, .15);
+            border-radius: 14px;
+            outline: none;
             background: white;
+            color: var(--text);
             font-family: 'DM Sans', sans-serif;
             font-size: 14px;
-            outline: none;
+            transition: .2s;
+        }
+
+        .suggestion textarea::placeholder {
+            color: #a3adbb;
         }
 
         .suggestion textarea:focus {
-            border-color: #781f2b;
-            box-shadow: 0 0 0 3px rgba(120, 31, 43, .08);
+            border-color: var(--navy);
+            box-shadow: 0 0 0 4px rgba(201, 162, 77, .22);
         }
 
+        /* TOMBOL */
         .navigation {
             display: flex;
-            gap: 15px;
+            gap: 14px;
         }
 
         .btn {
-            flex: 1;
+            min-height: 56px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 9px;
-            padding: 16px;
-            border-radius: 12px;
+            gap: 12px;
+            border-radius: 999px;
+            text-decoration: none;
             font-family: 'DM Sans', sans-serif;
             font-size: 15px;
-            font-weight: 800;
-            line-height: 1;
-            text-decoration: none;
+            font-weight: 700;
+            letter-spacing: .3px;
             cursor: pointer;
-            transition: .3s;
-        }
-
-        .btn-skip {
-            background: white;
-            color: #781f2b;
-            border: 1px solid #781f2b;
-        }
-
-        .btn-next {
-            background: linear-gradient(135deg, #781f2b, #4f101d);
-            color: white;
-            border: none;
+            transition: transform .25s, box-shadow .25s;
         }
 
         .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 7px 15px rgba(80, 20, 30, .13);
+            transform: translateY(-2px);
         }
 
+        .btn:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--gold);
+        }
+
+        .btn-skip {
+            padding: 0 34px;
+            color: var(--navy);
+            background: white;
+            border: 1.5px solid var(--navy);
+        }
+
+        .btn-skip:hover {
+            color: white;
+            background: var(--navy);
+        }
+
+        /* tombol utama: gaya sama dengan slider di halaman awal */
+        .btn-next {
+            flex: 1;
+            padding: 0 7px 0 28px;
+            border: none;
+            color: white;
+            background: linear-gradient(135deg, var(--navy), var(--navy-dark));
+            box-shadow:
+                0 14px 30px rgba(18, 41, 74, .30),
+                inset 0 0 0 1px rgba(255, 255, 255, .06);
+        }
+
+        .btn-next .btn-icon {
+            width: 42px;
+            height: 42px;
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: var(--navy-dark);
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            box-shadow: 0 5px 12px rgba(0, 0, 0, .28);
+        }
+
+        .btn-next .btn-icon .arrow {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* FOOTER */
         .footer {
-            background: #f5eee7;
-            padding: 18px;
+            padding: 20px;
             text-align: center;
+            color: #7b8799;
             font-size: 12px;
-            color: #897a75;
-            border-top: 1px solid #eaded6;
+            line-height: 1.8;
+            background: #f3efe6;
+            border-top: 1px solid var(--line);
+        }
+
+        @keyframes muncul {
+            from { opacity: 0; transform: scale(.98); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+            }
         }
 
         @media (max-width: 600px) {
@@ -249,22 +359,22 @@
             }
 
             .container {
-                margin: 10px 0;
-                border-radius: 19px;
+                margin: 8px 0;
+                border-radius: 22px;
+            }
+
+            .top-line {
+                height: 6px;
             }
 
             .header {
-                padding: 20px;
+                padding: 18px;
+                gap: 12px;
             }
 
             .back {
-                width: 38px;
-                height: 38px;
-            }
-
-            .back .arrow {
-                width: 20px;
-                height: 20px;
+                width: 40px;
+                height: 40px;
             }
 
             .header h2 {
@@ -272,17 +382,13 @@
             }
 
             .content {
-                padding: 30px 20px;
+                padding: 28px 20px 30px;
             }
 
             .illustration {
-                width: 95px;
-                height: 95px;
-                font-size: 53px;
-            }
-
-            .title {
-                font-size: 28px;
+                width: 92px;
+                height: 92px;
+                font-size: 48px;
             }
 
             .description {
@@ -290,11 +396,11 @@
             }
 
             .stars {
-                gap: 9px;
+                gap: 8px;
             }
 
             .star {
-                font-size: 35px;
+                font-size: 36px;
             }
 
             .navigation {
@@ -302,14 +408,35 @@
             }
 
             .btn {
-                padding: 14px 8px;
-                font-size: 13px;
+                min-height: 52px;
+                font-size: 14px;
+            }
+
+            .btn-skip {
+                padding: 0 20px;
+            }
+
+            .btn-next {
+                padding-left: 20px;
+            }
+
+            .btn-next .btn-icon {
+                width: 38px;
+                height: 38px;
+            }
+
+            .footer {
+                padding: 16px 12px;
+                font-size: 10px;
             }
         }
     </style>
 </head>
 
 <body>
+
+<div class="decoration one"></div>
+<div class="decoration two"></div>
 
 <div class="container">
 
@@ -375,9 +502,11 @@
 
                 <button type="submit" class="btn btn-next">
                     Lanjut
-                    <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M5 12h14M13 6l6 6-6 6"/>
-                    </svg>
+                    <span class="btn-icon">
+                        <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M5 12h14M13 6l6 6-6 6"/>
+                        </svg>
+                    </span>
                 </button>
 
             </div>
@@ -419,6 +548,8 @@
                     Number(item.dataset.value) <= value
                 );
             });
+
+            ratingHelp.classList.add('terpilih');
 
             ratingHelp.textContent =
                 value + ' dari 5 - ' + descriptions[value];

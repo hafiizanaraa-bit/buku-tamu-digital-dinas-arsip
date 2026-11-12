@@ -3,117 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hasil Pencarian - Buku Tamu Digital</title>
+    <title>Hasil Pencarian | Buku Tamu Digital</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --navy: #12294a;
+            --navy-dark: #0b1b33;
+            --navy-light: #1f4172;
+            --gold: #c9a24d;
+            --gold-light: #e8d5a3;
+            --gold-dark: #a9822f;
+            --ivory: #fbf8f1;
+            --text: #1e293b;
+            --muted: #64748b;
+            --line: rgba(18, 41, 74, 0.10);
+        }
+
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
         body {
             min-height: 100vh;
-            padding: 25px;
-            background: #f5eeea;
-            color: #343044;
+            padding: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             font-family: 'DM Sans', sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 8% 12%, rgba(31, 65, 114, .16) 0, transparent 30%),
+                radial-gradient(circle at 92% 88%, rgba(201, 162, 77, .22) 0, transparent 32%),
+                radial-gradient(rgba(18, 41, 74, .07) 1px, transparent 1px),
+                #f1ede4;
+            background-size: auto, auto, 22px 22px, auto;
+            background-attachment: fixed;
         }
 
+        /* LINGKARAN DEKORASI */
+        .decoration {
+            position: fixed;
+            border: 1px solid rgba(201, 162, 77, .45);
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .decoration.one { width: 340px; height: 340px; top: -140px; left: -110px; }
+        .decoration.two { width: 440px; height: 440px; bottom: -170px; right: -110px; }
+
+        /* KARTU UTAMA */
         .container {
             width: 100%;
-            max-width: 650px;
-            margin: 20px auto;
-            background: #fffdfb;
-            border: 1px solid #eadedb;
-            border-radius: 22px;
+            max-width: 700px;
+            position: relative;
+            z-index: 1;
             overflow: hidden;
-            box-shadow: 0 12px 35px rgba(75, 30, 40, .10);
+            border-radius: 28px;
+            background: var(--ivory);
+            border: 1px solid var(--line);
+            box-shadow: 0 30px 80px rgba(11, 27, 51, .20);
+            animation: muncul .8s ease both;
         }
 
         .top-bar {
-            height: 9px;
-            background: linear-gradient(90deg, #4f1020, #9d3349, #d2a36c);
+            height: 8px;
+            background: linear-gradient(90deg, var(--navy-dark), var(--gold), var(--navy-light));
         }
 
+        /* IKON */
+        .icon {
+            width: 22px;
+            height: 22px;
+            flex-shrink: 0;
+            display: block;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* HEADER */
         .header {
             display: flex;
             align-items: center;
-            gap: 14px;
-            padding: 22px 28px;
-            border-bottom: 1px solid #f0e8e5;
+            gap: 16px;
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--line);
         }
 
         .back {
-            width: 38px;
-            height: 38px;
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
-            background: #f8eeee;
-            color: #781f2b;
+            color: var(--navy-dark);
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            box-shadow: 0 6px 16px rgba(0, 0, 0, .22);
             text-decoration: none;
-            font-size: 23px;
+            transition: transform .25s;
+        }
+
+        .back:hover {
+            transform: translateX(-3px);
+        }
+
+        .back:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--gold);
         }
 
         .header h1 {
-            color: #4f1020;
-            font-size: 20px;
+            color: var(--navy);
+            font-size: 21px;
             font-weight: 800;
+            line-height: 1.2;
         }
 
+        /* ISI */
         .content {
-            padding: 25px 28px 30px;
+            padding: 30px 38px 36px;
+        }
+
+        .employee-card,
+        .info-card {
+            padding: 24px;
+            background: white;
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            box-shadow: 0 6px 20px rgba(11, 27, 51, .06);
         }
 
         .employee-card {
-            padding: 22px;
-            background: #fff;
-            border: 1px solid #eee7e4;
-            border-radius: 17px;
-            box-shadow: 0 4px 15px rgba(70, 40, 40, .04);
             margin-bottom: 18px;
         }
 
         .employee-profile {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 16px;
         }
 
         .avatar {
-            width: 60px;
-            height: 60px;
+            width: 64px;
+            height: 64px;
             flex-shrink: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             border-radius: 50%;
-            background: #f3e9e8;
-            color: #781f2b;
             font-size: 28px;
+            background: rgba(201, 162, 77, .16);
+            border: 1px solid rgba(201, 162, 77, .45);
+            box-shadow: 0 0 0 6px rgba(201, 162, 77, .08);
         }
 
         .employee-name {
-            color: #343044;
-            font-size: 16px;
-            font-weight: 800;
             margin-bottom: 5px;
+            color: var(--navy);
+            font-size: 17px;
+            font-weight: 800;
         }
 
         .employee-position {
-            color: #85818b;
+            color: var(--muted);
             font-size: 13px;
         }
 
         .status-badge {
             display: inline-block;
             margin-top: 11px;
-            padding: 7px 13px;
-            border-radius: 30px;
+            padding: 7px 14px;
+            border-radius: 999px;
             font-size: 12px;
             font-weight: 700;
         }
@@ -134,138 +205,207 @@
         }
 
         .status-tidak {
-            color: #665b61;
-            background: #eee9eb;
+            color: #5b6575;
+            background: #eceff3;
         }
 
         .status-belum {
-            color: #75675f;
-            background: #f1ece7;
+            color: #6b7280;
+            background: #f1f3f5;
         }
 
         .employee-description {
-            margin-top: 9px;
-            color: #88838d;
-            font-size: 12px;
+            margin-top: 14px;
+            color: var(--muted);
+            font-size: 13px;
             line-height: 1.6;
         }
 
         .appointment-hint {
-            margin-top: 15px;
-            padding: 13px;
-            background: #edf4fc;
-            border-radius: 11px;
+            margin-top: 16px;
+            padding: 14px;
             text-align: center;
-            color: #647b9b;
-            font-size: 12px;
+            color: var(--navy-light);
+            font-size: 13px;
             line-height: 1.7;
+            background: rgba(201, 162, 77, .12);
+            border: 1px dashed var(--gold);
+            border-radius: 14px;
         }
 
-        .info-card {
-            padding: 22px;
-            background: #fff;
-            border: 1px solid #eee7e4;
-            border-radius: 17px;
-            box-shadow: 0 4px 15px rgba(70, 40, 40, .04);
-        }
-
+        /* INFORMASI LAIN */
         .section-title {
-            margin-bottom: 20px;
-            color: #343044;
-            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 22px;
+            color: var(--gold-dark);
+            font-size: 11px;
             font-weight: 800;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .section-title::before {
+            content: "";
+            width: 34px;
+            height: 2px;
+            background: var(--gold);
+            border-radius: 2px;
         }
 
         .info-row {
             display: flex;
             align-items: flex-start;
-            gap: 13px;
+            gap: 14px;
             margin-bottom: 20px;
         }
 
-        .info-row:last-child {
+        .info-row:last-of-type {
             margin-bottom: 0;
         }
 
         .info-icon {
-            width: 35px;
-            height: 35px;
+            width: 38px;
+            height: 38px;
             flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 10px;
-            background: #edf2fb;
-            color: #5879b6;
+            border-radius: 12px;
             font-size: 16px;
+            color: var(--navy);
+            background: rgba(18, 41, 74, .07);
         }
 
         .info-label {
-            margin-bottom: 5px;
-            color: #85818b;
+            margin-bottom: 4px;
+            color: var(--muted);
             font-size: 12px;
         }
 
         .info-value {
-            color: #4b4655;
-            font-size: 13px;
-            font-weight: 600;
+            color: var(--navy);
+            font-size: 14px;
+            font-weight: 700;
             line-height: 1.6;
         }
 
         .visit-status {
-            color: #c37a4c;
+            color: var(--gold-dark);
             font-weight: 800;
         }
 
+        /* TOMBOL */
         .button-area {
-            margin-top: 24px;
+            margin-top: 26px;
         }
 
         .btn-appointment {
             width: 100%;
-            min-height: 49px;
+            min-height: 58px;
+            padding: 0 8px 0 30px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1.5px solid #a94a60;
-            border-radius: 11px;
-            background: white;
-            color: #781f2b;
+            gap: 12px;
+            border-radius: 999px;
+            color: white;
             text-decoration: none;
             font-family: inherit;
-            font-size: 14px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: .2s;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: .3px;
+            background: linear-gradient(135deg, var(--navy), var(--navy-dark));
+            box-shadow:
+                0 14px 30px rgba(18, 41, 74, .30),
+                inset 0 0 0 1px rgba(255, 255, 255, .06);
+            transition: transform .25s;
         }
 
         .btn-appointment:hover {
-            background: #781f2b;
-            color: white;
+            transform: translateY(-2px);
         }
 
+        .btn-appointment:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--gold);
+        }
+
+        .btn-appointment .btn-icon {
+            width: 42px;
+            height: 42px;
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: var(--navy-dark);
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            box-shadow: 0 5px 12px rgba(0, 0, 0, .28);
+        }
+
+        .btn-appointment .btn-icon .icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* FOOTER */
         .footer {
-            padding: 17px;
+            padding: 20px;
             text-align: center;
-            color: #99909a;
-            background: #faf5f1;
-            font-size: 11px;
-            line-height: 1.7;
+            color: #7b8799;
+            font-size: 12px;
+            line-height: 1.8;
+            background: #f3efe6;
+            border-top: 1px solid var(--line);
+        }
+
+        @keyframes muncul {
+            from { opacity: 0; transform: scale(.98); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+
+        @media (min-width: 900px) {
+            .container {
+                max-width: 740px;
+            }
+
+            .content {
+                padding: 36px 46px 42px;
+            }
         }
 
         @media (max-width: 600px) {
             body {
-                padding: 9px;
+                padding: 10px;
+                align-items: flex-start;
             }
 
             .container {
-                margin: 8px auto;
-                border-radius: 18px;
+                margin: 8px 0;
+                border-radius: 22px;
+            }
+
+            .top-bar {
+                height: 6px;
             }
 
             .header {
-                padding: 17px 19px;
+                padding: 18px;
+                gap: 12px;
+            }
+
+            .back {
+                width: 40px;
+                height: 40px;
             }
 
             .header h1 {
@@ -273,53 +413,42 @@
             }
 
             .content {
-                padding: 17px 15px 23px;
+                padding: 20px 14px 26px;
             }
 
-            .employee-card {
-                padding: 17px;
+            .employee-card,
+            .info-card {
+                padding: 18px;
             }
 
             .avatar {
-                width: 53px;
-                height: 53px;
+                width: 54px;
+                height: 54px;
                 font-size: 24px;
             }
 
             .employee-name {
-                font-size: 14px;
+                font-size: 15px;
             }
 
             .employee-position {
                 font-size: 12px;
             }
 
-            .info-card {
-                padding: 18px;
-            }
-
-            .section-title {
+            .btn-appointment {
+                min-height: 54px;
+                padding-left: 22px;
                 font-size: 14px;
             }
-        }
 
-        @media (min-width: 900px) {
-            body {
-                padding-top: 45px;
-                padding-bottom: 45px;
+            .btn-appointment .btn-icon {
+                width: 40px;
+                height: 40px;
             }
 
-            .container {
-                max-width: 700px;
-            }
-
-            .content {
-                padding: 32px 38px 38px;
-            }
-
-            .employee-card,
-            .info-card {
-                padding: 25px;
+            .footer {
+                padding: 16px 12px;
+                font-size: 10px;
             }
         }
     </style>
@@ -365,12 +494,19 @@
         : 'Perlu Janji Temu';
 @endphp
 
+<div class="decoration one"></div>
+<div class="decoration two"></div>
+
 <div class="container">
 
     <div class="top-bar"></div>
 
     <header class="header">
-        <a href="{{ route('buku-tamu.tujuan') }}" class="back">‹</a>
+        <a href="{{ route('buku-tamu.tujuan') }}" class="back" aria-label="Kembali">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M19 12H5M11 6l-6 6 6 6"/>
+            </svg>
+        </a>
         <h1>Hasil Pencarian</h1>
     </header>
 
@@ -465,6 +601,11 @@
                     class="btn-appointment"
                 >
                     Ajukan Janji Temu
+                    <span class="btn-icon">
+                        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M5 12h14M13 6l6 6-6 6"/>
+                        </svg>
+                    </span>
                 </a>
 
             </div>

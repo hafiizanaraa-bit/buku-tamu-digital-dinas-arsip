@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Lokasi Dinas | Buku Tamu Digital</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,12 +11,16 @@
 
     <style>
         :root {
-            --maroon: #781f2b;
-            --dark: #4f101d;
-            --gold: #c69b55;
-            --cream: #fffaf4;
-            --text: #332a29;
-            --muted: #766b68;
+            --navy: #12294a;
+            --navy-dark: #0b1b33;
+            --navy-light: #1f4172;
+            --gold: #c9a24d;
+            --gold-light: #e8d5a3;
+            --gold-dark: #a9822f;
+            --ivory: #fbf8f1;
+            --text: #1e293b;
+            --muted: #64748b;
+            --line: rgba(18, 41, 74, 0.10);
         }
 
         * {
@@ -28,122 +31,160 @@
 
         body {
             min-height: 100vh;
-            padding: 35px;
+            padding: 24px;
             display: flex;
             justify-content: center;
             align-items: center;
-            background:
-                radial-gradient(circle at top left, #eadbd2, transparent 35%),
-                #f4eee8;
             font-family: 'DM Sans', sans-serif;
             color: var(--text);
+            background:
+                radial-gradient(circle at 8% 12%, rgba(31, 65, 114, .16) 0, transparent 30%),
+                radial-gradient(circle at 92% 88%, rgba(201, 162, 77, .22) 0, transparent 32%),
+                radial-gradient(rgba(18, 41, 74, .07) 1px, transparent 1px),
+                #f1ede4;
+            background-size: auto, auto, 22px 22px, auto;
+            background-attachment: fixed;
         }
 
+        /* LINGKARAN DEKORASI */
+        .decoration {
+            position: fixed;
+            border: 1px solid rgba(201, 162, 77, .45);
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .decoration.one { width: 340px; height: 340px; top: -140px; left: -110px; }
+        .decoration.two { width: 440px; height: 440px; bottom: -170px; right: -110px; }
+
+        /* KARTU UTAMA */
         .container {
             width: 100%;
             max-width: 1100px;
-            background: var(--cream);
-            border-radius: 28px;
+            position: relative;
+            z-index: 1;
             overflow: hidden;
-            border: 1px solid #eaded6;
-            box-shadow: 0 25px 70px rgba(65, 30, 30, .14);
+            border-radius: 28px;
+            background: var(--ivory);
+            border: 1px solid var(--line);
+            box-shadow: 0 30px 80px rgba(11, 27, 51, .20);
+            animation: muncul .8s ease both;
         }
 
         .top-line {
             height: 8px;
-            background: linear-gradient(
-                90deg,
-                var(--dark),
-                var(--gold),
-                var(--maroon)
-            );
+            background: linear-gradient(90deg, var(--navy-dark), var(--gold), var(--navy-light));
         }
 
-        /* IKON PANAH (SVG agar tepat di tengah tombol) */
-
+        /* IKON PANAH */
         .arrow {
-            width: 1.2em;
-            height: 1.2em;
+            width: 22px;
+            height: 22px;
             flex-shrink: 0;
             display: block;
             fill: none;
             stroke: currentColor;
-            stroke-width: 2.4;
+            stroke-width: 2.6;
             stroke-linecap: round;
             stroke-linejoin: round;
         }
 
         /* HEADER */
-
         .header {
+            padding: 34px 25px 22px;
             text-align: center;
-            padding: 35px 25px 25px;
+        }
+
+        .logo-wrapper {
+            width: 82px;
+            height: 82px;
+            margin: 0 auto 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            background: white;
+            border-radius: 22px;
+            border: 1px solid var(--line);
+            box-shadow: 0 8px 22px rgba(18, 41, 74, .12);
         }
 
         .logo {
-            width: 85px;
-            height: 85px;
+            width: 100%;
+            height: 100%;
             object-fit: contain;
-            margin-bottom: 12px;
         }
 
         .agency-name {
-            color: var(--dark);
-            font-size: 16px;
+            color: var(--navy);
+            font-size: 15px;
             font-weight: 800;
             line-height: 1.6;
-            letter-spacing: .5px;
+            letter-spacing: .6px;
         }
 
-        /* CONTENT */
-
+        /* ISI */
         .content {
-            padding: 20px 65px 45px;
+            padding: 18px 70px 46px;
         }
 
         .label {
-            display: inline-block;
-            color: var(--gold);
-            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+            color: var(--gold-dark);
+            font-size: 11px;
             font-weight: 800;
             letter-spacing: 3px;
-            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .label::before {
+            content: "";
+            width: 34px;
+            height: 2px;
+            background: var(--gold);
+            border-radius: 2px;
         }
 
         .title {
-            font-family: 'Playfair Display', serif;
-            font-size: 45px;
-            color: var(--maroon);
             margin-bottom: 12px;
+            color: var(--navy);
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(36px, 4.4vw, 52px);
+            font-weight: 800;
+            line-height: 1.08;
+            letter-spacing: -1.2px;
         }
 
         .description {
-            font-size: 16px;
-            color: var(--muted);
-            line-height: 1.8;
             margin-bottom: 30px;
+            color: var(--muted);
+            font-size: 16px;
+            line-height: 1.8;
         }
 
-        /* LOCATION CARD */
-
+        /* KARTU LOKASI */
         .location-card {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            background: white;
-            border-radius: 22px;
             overflow: hidden;
-            border: 1px solid #eee3da;
-            box-shadow: 0 12px 35px rgba(70, 30, 30, .09);
+            background: white;
+            border-radius: 24px;
+            border: 1px solid var(--line);
+            box-shadow: 0 14px 38px rgba(11, 27, 51, .10);
         }
 
         .location-info {
-            padding: 38px 32px;
+            padding: 38px 34px;
         }
 
         .info-item {
             display: flex;
             align-items: flex-start;
-            gap: 17px;
+            gap: 16px;
             margin-bottom: 30px;
         }
 
@@ -159,14 +200,16 @@
             align-items: center;
             justify-content: center;
             border-radius: 15px;
-            background: #f6e9e8;
-            font-size: 23px;
+            background: rgba(201, 162, 77, .16);
+            border: 1px solid rgba(201, 162, 77, .35);
+            font-size: 22px;
         }
 
         .info-text h3 {
-            color: var(--maroon);
-            font-size: 17px;
             margin-bottom: 8px;
+            color: var(--navy);
+            font-size: 17px;
+            font-weight: 800;
         }
 
         .info-text p {
@@ -175,50 +218,48 @@
             line-height: 1.8;
         }
 
-        /* MAP AREA */
-
+        /* AREA PETA */
         .map-area {
             min-height: 390px;
-            background:
-                linear-gradient(
-                    rgba(78, 20, 29, .65),
-                    rgba(78, 20, 29, .65)
-                ),
-                linear-gradient(135deg, #d8c4b0, #a98d7c);
+            padding: 35px;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 35px;
+            background:
+                radial-gradient(circle at 85% 12%, rgba(201, 162, 77, .30) 0, transparent 40%),
+                linear-gradient(135deg, var(--navy-light), var(--navy-dark));
         }
 
         .map-content {
-            color: white;
             max-width: 340px;
+            color: white;
         }
 
         .map-icon {
-            width: 85px;
-            height: 85px;
-            border-radius: 50%;
+            width: 84px;
+            height: 84px;
             margin: 0 auto 22px;
-            background: rgba(255, 255, 255, .15);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 43px;
+            border-radius: 50%;
+            font-size: 40px;
+            background: rgba(255, 255, 255, .10);
+            border: 1px solid rgba(232, 213, 163, .55);
         }
 
         .map-content h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 27px;
             margin-bottom: 13px;
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
         }
 
         .map-content p {
             font-size: 14px;
             line-height: 1.8;
-            opacity: .92;
+            opacity: .9;
         }
 
         .map-button {
@@ -226,78 +267,160 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-            margin-top: 25px;
-            padding: 16px 25px;
-            background: white;
-            color: var(--maroon);
-            text-decoration: none;
-            font-weight: 800;
+            margin-top: 26px;
+            padding: 16px 28px;
+            border-radius: 999px;
+            color: var(--navy-dark);
             font-size: 14px;
+            font-weight: 800;
             line-height: 1;
-            border-radius: 13px;
-            transition: .3s;
+            text-decoration: none;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            box-shadow: 0 8px 20px rgba(0, 0, 0, .30);
+            transition: transform .25s, box-shadow .25s;
         }
 
         .map-button:hover {
-            background: var(--gold);
-            color: white;
             transform: translateY(-3px);
+            box-shadow: 0 12px 26px rgba(0, 0, 0, .35);
         }
 
-        /* NAVIGATION */
+        .map-button .arrow {
+            width: 18px;
+            height: 18px;
+        }
 
+        .map-button:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px var(--navy-dark), 0 0 0 6px var(--gold-light);
+        }
+
+        /* TOMBOL NAVIGASI */
         .navigation {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 15px;
-            margin-top: 35px;
+            gap: 16px;
+            margin-top: 36px;
         }
 
         .btn {
+            min-height: 58px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            min-width: 190px;
-            padding: 17px 25px;
-            border-radius: 13px;
+            gap: 12px;
+            border-radius: 999px;
             text-decoration: none;
             font-size: 15px;
-            font-weight: 800;
-            line-height: 1;
-            transition: .3s;
-        }
-
-        .btn-back {
-            background: #eee6df;
-            color: var(--text);
-        }
-
-        .btn-next {
-            background: linear-gradient(135deg, var(--maroon), var(--dark));
-            color: white;
-            box-shadow: 0 8px 20px rgba(120, 31, 43, .2);
+            font-weight: 700;
+            letter-spacing: .3px;
+            transition: transform .25s, box-shadow .25s;
         }
 
         .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(80, 20, 30, .15);
+            transform: translateY(-2px);
+        }
+
+        .btn:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--gold);
+        }
+
+        .btn-back {
+            min-width: 190px;
+            padding: 0 30px;
+            color: var(--navy);
+            background: white;
+            border: 1.5px solid var(--navy);
+        }
+
+        .btn-back:hover {
+            color: white;
+            background: var(--navy);
+        }
+
+        /* tombol utama: gaya sama dengan slider di halaman awal */
+        .btn-next {
+            min-width: 290px;
+            padding: 0 8px 0 30px;
+            color: white;
+            background: linear-gradient(135deg, var(--navy), var(--navy-dark));
+            box-shadow:
+                0 14px 30px rgba(18, 41, 74, .30),
+                inset 0 0 0 1px rgba(255, 255, 255, .06);
+        }
+
+        .btn-next .btn-icon {
+            width: 42px;
+            height: 42px;
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: var(--navy-dark);
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            box-shadow: 0 5px 12px rgba(0, 0, 0, .28);
+        }
+
+        .btn-next .btn-icon .arrow {
+            width: 20px;
+            height: 20px;
         }
 
         /* FOOTER */
-
         .footer {
             padding: 22px;
             text-align: center;
-            background: #f5eee7;
-            color: #897a75;
+            color: #7b8799;
             font-size: 12px;
             line-height: 1.8;
+            background: #f3efe6;
+            border-top: 1px solid var(--line);
         }
 
-        /* MOBILE */
+        @keyframes muncul {
+            from { opacity: 0; transform: scale(.98); }
+            to   { opacity: 1; transform: scale(1); }
+        }
 
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+
+        /* LAYAR LAPTOP PENDEK */
+        @media (min-width: 901px) and (max-height: 720px) {
+            body {
+                padding: 14px;
+            }
+
+            .header {
+                padding-top: 24px;
+                padding-bottom: 14px;
+            }
+
+            .logo-wrapper {
+                width: 68px;
+                height: 68px;
+            }
+
+            .map-area {
+                min-height: 340px;
+            }
+        }
+
+        /* TABLET */
+        @media (max-width: 900px) {
+            .content {
+                padding: 18px 36px 40px;
+            }
+        }
+
+        /* HP */
         @media (max-width: 700px) {
             body {
                 padding: 12px;
@@ -306,16 +429,21 @@
 
             .container {
                 margin: 8px 0;
-                border-radius: 20px;
+                border-radius: 22px;
+            }
+
+            .top-line {
+                height: 6px;
             }
 
             .header {
-                padding: 27px 15px 20px;
+                padding: 26px 15px 18px;
             }
 
-            .logo {
+            .logo-wrapper {
                 width: 72px;
                 height: 72px;
+                border-radius: 19px;
             }
 
             .agency-name {
@@ -323,29 +451,39 @@
             }
 
             .content {
-                padding: 22px 18px 30px;
+                padding: 20px 18px 30px;
+                text-align: center;
             }
 
             .label {
-                font-size: 10px;
+                font-size: 9px;
                 letter-spacing: 2px;
             }
 
+            .label::after {
+                content: "";
+                width: 34px;
+                height: 2px;
+                background: var(--gold);
+                border-radius: 2px;
+            }
+
             .title {
-                font-size: 34px;
+                font-size: 36px;
             }
 
             .description {
+                margin-bottom: 24px;
                 font-size: 14px;
-                margin-bottom: 23px;
             }
 
             .location-card {
                 grid-template-columns: 1fr;
+                text-align: left;
             }
 
             .location-info {
-                padding: 27px 20px;
+                padding: 26px 20px;
             }
 
             .info-item {
@@ -363,7 +501,7 @@
 
             .map-area {
                 min-height: 280px;
-                padding: 25px 20px;
+                padding: 26px 20px;
             }
 
             .map-content h3 {
@@ -377,23 +515,23 @@
 
             .btn {
                 width: 100%;
-                min-width: auto;
-                padding: 16px;
+                min-width: 0;
+                min-height: 54px;
                 font-size: 14px;
             }
 
-            .footer {
-                font-size: 11px;
-                padding: 18px 12px;
+            .btn-next {
+                padding-left: 22px;
             }
-        }
 
-        /* LAPTOP */
+            .btn-next .btn-icon {
+                width: 40px;
+                height: 40px;
+            }
 
-        @media (min-width: 701px) {
-            .content {
-                padding-left: 75px;
-                padding-right: 75px;
+            .footer {
+                padding: 16px 12px;
+                font-size: 11px;
             }
         }
     </style>
@@ -401,17 +539,22 @@
 
 <body>
 
+<div class="decoration one"></div>
+<div class="decoration two"></div>
+
 <div class="container">
 
     <div class="top-line"></div>
 
     <header class="header">
 
-        <img
-            src="{{ asset('images/logo cirebon.png') }}"
-            alt="Logo Kabupaten Cirebon"
-            class="logo"
-        >
+        <div class="logo-wrapper">
+            <img
+                src="{{ asset('images/logo cirebon.png') }}"
+                alt="Logo Kabupaten Cirebon"
+                class="logo"
+            >
+        </div>
 
         <p class="agency-name">
             DINAS ARSIP DAN PERPUSTAKAAN<br>
@@ -422,7 +565,7 @@
 
     <main class="content">
 
-        <span class="label">INFORMASI KUNJUNGAN</span>
+        <span class="label">Informasi Kunjungan</span>
 
         <h1 class="title">Lokasi Dinas</h1>
 
@@ -434,7 +577,6 @@
         <div class="location-card">
 
             <!-- INFORMASI KANTOR -->
-
             <div class="location-info">
 
                 <div class="info-item">
@@ -483,7 +625,6 @@
             </div>
 
             <!-- GOOGLE MAPS -->
-
             <div class="map-area">
 
                 <div class="map-content">
@@ -516,7 +657,6 @@
         </div>
 
         <!-- TOMBOL NAVIGASI -->
-
         <div class="navigation">
 
             <a href="{{ route('home') }}" class="btn btn-back">
@@ -528,9 +668,11 @@
 
             <a href="{{ route('buku-tamu.survei') }}" class="btn btn-next">
                 Lanjutkan ke Survei
-                <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M5 12h14M13 6l6 6-6 6"/>
-                </svg>
+                <span class="btn-icon">
+                    <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M5 12h14M13 6l6 6-6 6"/>
+                    </svg>
+                </span>
             </a>
 
         </div>

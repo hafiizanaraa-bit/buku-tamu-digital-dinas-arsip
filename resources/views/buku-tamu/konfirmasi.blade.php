@@ -3,11 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Konfirmasi Kunjungan - Buku Tamu Digital</title>
+    <title>Konfirmasi Kunjungan | Buku Tamu Digital</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --navy: #12294a;
+            --navy-dark: #0b1b33;
+            --navy-light: #1f4172;
+            --gold: #c9a24d;
+            --gold-light: #e8d5a3;
+            --gold-dark: #a9822f;
+            --ivory: #fbf8f1;
+            --text: #1e293b;
+            --muted: #64748b;
+            --line: rgba(18, 41, 74, 0.10);
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -16,139 +31,191 @@
 
         body {
             min-height: 100vh;
-            padding: 20px;
-            background: #f5f1ed;
-            color: #29232a;
-            font-family: 'Poppins', sans-serif;
+            padding: 24px;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 8% 12%, rgba(31, 65, 114, .16) 0, transparent 30%),
+                radial-gradient(circle at 92% 88%, rgba(201, 162, 77, .22) 0, transparent 32%),
+                radial-gradient(rgba(18, 41, 74, .07) 1px, transparent 1px),
+                #f1ede4;
+            background-size: auto, auto, 22px 22px, auto;
+            background-attachment: fixed;
         }
 
+        /* LINGKARAN DEKORASI (di luar area unduhan) */
+        .decoration {
+            position: fixed;
+            border: 1px solid rgba(201, 162, 77, .45);
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .decoration.one { width: 340px; height: 340px; top: -140px; left: -110px; }
+        .decoration.two { width: 440px; height: 440px; bottom: -170px; right: -110px; }
+
+        /* KARTU UTAMA */
         .container {
             width: 100%;
-            max-width: 570px;
-            margin: 25px auto;
-            background: #fff;
-            border: 1px solid #eadbdc;
-            border-radius: 20px;
+            max-width: 600px;
+            margin: 16px auto;
+            position: relative;
+            z-index: 1;
             overflow: hidden;
-            box-shadow: 0 8px 30px rgba(0,0,0,.07);
+            border-radius: 28px;
+            background: var(--ivory);
+            border: 1px solid var(--line);
+            box-shadow: 0 30px 80px rgba(11, 27, 51, .20);
+            animation: muncul .8s ease both;
         }
 
         .top-bar {
             height: 8px;
-            background: linear-gradient(90deg, #5b172c, #a13d58, #d2a36c);
+            background: linear-gradient(90deg, var(--navy-dark), var(--gold), var(--navy-light));
         }
 
         .content {
-            padding: 30px;
+            padding: 36px 36px 34px;
         }
 
+        /* IKON BERHASIL */
         .success-icon {
-            width: 75px;
-            height: 75px;
-            margin: 0 auto 18px;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
-            background: #e4f5e9;
-            color: #299653;
+            color: var(--gold-light);
             font-size: 42px;
             font-weight: 700;
+            line-height: 1;
+            background: linear-gradient(135deg, var(--navy), var(--navy-dark));
+            border: 4px solid var(--gold);
+            box-shadow: 0 0 0 8px rgba(201, 162, 77, .15);
         }
 
+        /* JUDUL */
         .heading {
-            text-align: center;
             margin-bottom: 12px;
+            text-align: center;
         }
 
         .heading h1 {
-            color: #5b172c;
-            font-size: 20px;
+            color: var(--navy);
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
             font-weight: 800;
-            line-height: 1.5;
+            line-height: 1.2;
+            letter-spacing: -.5px;
         }
 
         .heading p {
-            margin-top: 12px;
-            color: #77717a;
-            font-size: 12px;
+            margin-top: 14px;
+            color: var(--muted);
+            font-size: 13px;
             line-height: 1.8;
         }
 
+        /* STATUS */
         .status-box {
-            margin-top: 25px;
-            padding: 17px;
-            background: #fff8ed;
-            border: 1px solid #f1dfbd;
-            border-radius: 12px;
+            margin-top: 24px;
+            padding: 16px;
             text-align: center;
+            background: rgba(201, 162, 77, .14);
+            border: 1px dashed var(--gold);
+            border-radius: 16px;
         }
 
         .status-label {
-            color: #8a755b;
-            font-size: 11px;
             margin-bottom: 6px;
+            color: var(--gold-dark);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         .status-value {
-            color: #a46b20;
-            font-size: 14px;
+            color: var(--navy);
+            font-size: 16px;
             font-weight: 800;
         }
 
+        /* TIKET */
         .ticket {
             margin-top: 22px;
-            padding: 22px;
-            border: 1px solid #eadfe0;
-            border-radius: 14px;
-            background: #fffdfc;
+            padding: 24px;
+            background: white;
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            box-shadow: 0 6px 20px rgba(11, 27, 51, .06);
         }
 
         .ticket-header {
             padding-bottom: 16px;
-            border-bottom: 1px dashed #d8c5c8;
             text-align: center;
+            border-bottom: 1px dashed rgba(18, 41, 74, .25);
         }
 
         .ticket-header h2 {
-            color: #5b172c;
+            color: var(--navy);
             font-size: 15px;
             font-weight: 800;
+            letter-spacing: 1px;
         }
 
         .ticket-header p {
             margin-top: 5px;
-            color: #888;
+            color: var(--muted);
             font-size: 10px;
+            letter-spacing: .5px;
         }
 
         .kode-box {
             margin: 18px 0;
-            padding: 13px;
-            background: #f8eeee;
-            border-radius: 10px;
+            padding: 16px;
             text-align: center;
+            background: linear-gradient(135deg, var(--navy), var(--navy-dark));
+            border-radius: 16px;
         }
 
         .kode-label {
-            color: #8b7478;
+            color: var(--gold-light);
             font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2.5px;
         }
 
         .kode-value {
-            margin-top: 5px;
-            color: #741d39;
-            font-size: 19px;
+            margin-top: 6px;
+            color: #fff;
+            font-size: 22px;
             font-weight: 800;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             word-break: break-word;
         }
 
         .detail-title {
-            margin-bottom: 15px;
-            color: #5b172c;
-            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            color: var(--gold-dark);
+            font-size: 11px;
             font-weight: 800;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .detail-title::before {
+            content: "";
+            width: 34px;
+            height: 2px;
+            background: var(--gold);
+            border-radius: 2px;
         }
 
         .detail-row {
@@ -156,7 +223,7 @@
             justify-content: space-between;
             gap: 15px;
             padding: 11px 0;
-            border-bottom: 1px solid #f0e9e7;
+            border-bottom: 1px solid var(--line);
         }
 
         .detail-row:last-child {
@@ -165,132 +232,242 @@
 
         .detail-label {
             flex: 0 0 38%;
-            color: #88818a;
-            font-size: 11px;
+            color: var(--muted);
+            font-size: 12px;
         }
 
         .detail-value {
             flex: 1;
-            color: #39323b;
-            font-size: 11px;
-            font-weight: 600;
+            color: var(--navy);
+            font-size: 12px;
+            font-weight: 700;
             text-align: right;
             overflow-wrap: anywhere;
         }
 
+        /* PETUNJUK */
         .instruction {
             margin-top: 20px;
-            padding: 14px;
-            background: #edf3fb;
-            color: #526b8b;
-            border-radius: 10px;
-            font-size: 11px;
+            padding: 15px 18px;
+            color: var(--navy-light);
+            font-size: 12px;
             line-height: 1.8;
+            background: rgba(18, 41, 74, .06);
+            border-left: 4px solid var(--gold);
+            border-radius: 12px;
         }
 
+        /* UNDUHAN */
         .download-title {
-            margin-top: 25px;
-            margin-bottom: 12px;
-            color: #5b172c;
-            font-size: 13px;
-            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 28px;
+            margin-bottom: 14px;
+            color: var(--gold-dark);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .download-title::before {
+            content: "";
+            width: 34px;
+            height: 2px;
+            background: var(--gold);
+            border-radius: 2px;
         }
 
         .download-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 12px;
         }
 
         .download-btn {
-            min-height: 47px;
+            min-height: 52px;
+            padding: 0 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 7px;
-            border: 1px solid #741d39;
-            border-radius: 9px;
+            gap: 8px;
+            border: 1.5px solid var(--navy);
+            border-radius: 999px;
             background: white;
-            color: #741d39;
+            color: var(--navy);
             font-family: inherit;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 700;
+            letter-spacing: .2px;
             cursor: pointer;
-            transition: .2s;
+            transition: transform .25s, background .25s, color .25s;
         }
 
         .download-btn:hover {
-            background: #741d39;
+            background: var(--navy);
             color: white;
+            transform: translateY(-2px);
         }
 
         .download-btn:disabled {
             opacity: .6;
             cursor: wait;
+            transform: none;
         }
 
-        /* TOMBOL GOOGLE CALENDAR */
+        .download-btn:focus-visible,
+        .home-btn:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--gold);
+        }
+
         a.download-btn {
             text-decoration: none;
         }
 
         .calendar-btn {
             width: 100%;
-            margin-top: 10px;
+            margin-top: 12px;
         }
 
+        /* TOMBOL KEMBALI KE BERANDA: gaya sama dengan slider di halaman awal */
         .home-btn {
+            width: 100%;
+            min-height: 58px;
+            margin-top: 18px;
+            padding: 0 8px 0 30px;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 100%;
-            min-height: 47px;
-            margin-top: 12px;
-            border-radius: 9px;
-            background: #741d39;
+            gap: 12px;
+            border-radius: 999px;
             color: white;
-            text-decoration: none;
-            font-size: 12px;
+            font-size: 15px;
             font-weight: 700;
+            letter-spacing: .3px;
+            text-decoration: none;
+            background: linear-gradient(135deg, var(--navy), var(--navy-dark));
+            box-shadow:
+                0 14px 30px rgba(18, 41, 74, .30),
+                inset 0 0 0 1px rgba(255, 255, 255, .06);
+            transition: transform .25s;
         }
 
         .home-btn:hover {
-            background: #531329;
+            transform: translateY(-2px);
         }
 
+        .home-btn .btn-icon {
+            width: 42px;
+            height: 42px;
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: var(--navy-dark);
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            box-shadow: 0 5px 12px rgba(0, 0, 0, .28);
+        }
+
+        .home-btn .icon {
+            width: 20px;
+            height: 20px;
+            display: block;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* FOOTER */
         .footer {
-            padding: 17px;
-            background: #faf5f1;
-            color: #99909a;
+            padding: 20px;
             text-align: center;
-            font-size: 10px;
+            color: #7b8799;
+            font-size: 12px;
             line-height: 1.8;
+            background: #f3efe6;
+            border-top: 1px solid var(--line);
+        }
+
+        @keyframes muncul {
+            from { opacity: 0; transform: scale(.98); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+            }
         }
 
         @media (max-width: 480px) {
             body {
-                padding: 9px;
+                padding: 10px;
             }
 
             .container {
                 margin: 8px auto;
-                border-radius: 16px;
+                border-radius: 22px;
+            }
+
+            .top-bar {
+                height: 6px;
             }
 
             .content {
-                padding: 21px 17px;
+                padding: 26px 18px 26px;
+            }
+
+            .success-icon {
+                width: 70px;
+                height: 70px;
+                font-size: 36px;
             }
 
             .heading h1 {
-                font-size: 18px;
+                font-size: 23px;
+            }
+
+            .heading p {
+                font-size: 12px;
             }
 
             .ticket {
-                padding: 16px;
+                padding: 18px 16px;
             }
 
             .kode-value {
-                font-size: 16px;
+                font-size: 18px;
+            }
+
+            .download-buttons {
+                gap: 10px;
+            }
+
+            .download-btn {
+                padding: 0 8px;
+                font-size: 12px;
+            }
+
+            .home-btn {
+                min-height: 54px;
+                padding-left: 22px;
+                font-size: 14px;
+            }
+
+            .home-btn .btn-icon {
+                width: 40px;
+                height: 40px;
+            }
+
+            .footer {
+                padding: 16px 12px;
+                font-size: 10px;
             }
         }
 
@@ -306,10 +483,15 @@
                 background: white;
             }
 
+            .decoration {
+                display: none;
+            }
+
             .container {
                 margin: 0 auto;
                 box-shadow: none;
                 border: 1px solid #ddd;
+                animation: none;
             }
 
             .download-area,
@@ -326,7 +508,8 @@
             border-radius: 0 !important;
             overflow: visible !important;
             box-shadow: none !important;
-            border: 1px solid #eadbdc !important;
+            animation: none !important;
+            border: 1px solid var(--line) !important;
         }
 
         .pdf-mode .top-bar {
@@ -341,7 +524,9 @@
             width: 48px;
             height: 48px;
             margin-bottom: 8px;
-            font-size: 28px;
+            border-width: 3px;
+            box-shadow: none;
+            font-size: 26px;
         }
 
         .pdf-mode .heading {
@@ -349,7 +534,7 @@
         }
 
         .pdf-mode .heading h1 {
-            font-size: 17px;
+            font-size: 19px;
             line-height: 1.35;
         }
 
@@ -365,17 +550,18 @@
         }
 
         .pdf-mode .status-label {
-            font-size: 9px;
             margin-bottom: 3px;
+            font-size: 9px;
         }
 
         .pdf-mode .status-value {
-            font-size: 11px;
+            font-size: 12px;
         }
 
         .pdf-mode .ticket {
             margin-top: 12px;
             padding: 14px 18px;
+            box-shadow: none;
         }
 
         .pdf-mode .ticket-header {
@@ -393,7 +579,7 @@
 
         .pdf-mode .kode-box {
             margin: 10px 0;
-            padding: 8px;
+            padding: 9px;
         }
 
         .pdf-mode .kode-label {
@@ -402,12 +588,12 @@
 
         .pdf-mode .kode-value {
             margin-top: 3px;
-            font-size: 15px;
+            font-size: 16px;
         }
 
         .pdf-mode .detail-title {
             margin-bottom: 7px;
-            font-size: 11px;
+            font-size: 9px;
         }
 
         .pdf-mode .detail-row {
@@ -426,7 +612,7 @@
 
         .pdf-mode .instruction {
             margin-top: 10px;
-            padding: 9px;
+            padding: 9px 12px;
             font-size: 9px;
             line-height: 1.5;
         }
@@ -445,6 +631,9 @@
 </head>
 
 <body>
+
+<div class="decoration one"></div>
+<div class="decoration two"></div>
 
 <div class="container" id="buktiKunjungan">
 
@@ -675,6 +864,11 @@
         <!-- KEMBALI KE BERANDA -->
         <a href="{{ route('home') }}" class="home-btn">
             Kembali ke Beranda
+            <span class="btn-icon">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M5 12h14M13 6l6 6-6 6"/>
+                </svg>
+            </span>
         </a>
 
     </main>
@@ -700,14 +894,14 @@
 
         const area = document.getElementById('buktiKunjungan');
 
-        // Tunggu font Poppins selesai dimuat agar teks tidak berubah
+        // Tunggu font DM Sans dan Playfair Display selesai dimuat agar teks tidak berubah
         if (document.fonts && document.fonts.ready) {
             await document.fonts.ready;
         }
 
         return html2canvas(area, {
             scale: skala,
-            backgroundColor: '#ffffff',
+            backgroundColor: '#fbf8f1',
             useCORS: true,
             logging: false,
             scrollX: 0,
