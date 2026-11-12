@@ -728,6 +728,42 @@
         });
     }
     /* =========================================
+       PERKECIL LOGO (agar Word tidak menampilkan ukuran asli)
+    ========================================= */
+    function perkecilGambar(dataUrl, ukuran) {
+        return new Promise((resolve) => {
+            const img = new Image();
+
+            img.onload = function () {
+                const skala = Math.min(
+                    ukuran / img.naturalWidth,
+                    ukuran / img.naturalHeight,
+                    1
+                );
+                const lebar = Math.max(1, Math.round(img.naturalWidth * skala));
+                const tinggi = Math.max(1, Math.round(img.naturalHeight * skala));
+                const canvas = document.createElement('canvas');
+
+                canvas.width = lebar;
+                canvas.height = tinggi;
+                canvas.getContext('2d').drawImage(img, 0, 0, lebar, tinggi);
+
+                resolve({
+                    dataUrl: canvas.toDataURL('image/png'),
+                    lebar: lebar,
+                    tinggi: tinggi
+                });
+            };
+
+            img.onerror = function () {
+                resolve({ dataUrl: dataUrl, lebar: ukuran, tinggi: ukuran });
+            };
+
+            img.src = dataUrl;
+        });
+    }
+
+    /* =========================================
        ESCAPE HTML
     ========================================= */
     function escapeHtml(value) {
@@ -1090,13 +1126,21 @@
         try {
             const data = ambilDataTabel();
             let logoBase64 = '';
+            let logoLebar = 65;
+            let logoTinggi = 65;
             try {
-                logoBase64 = await ambilLogoBase64();
+                const logoAsli = await ambilLogoBase64();
+                const logoKecil = await perkecilGambar(logoAsli, 130);
+                logoBase64 = logoKecil.dataUrl;
+                /* ukuran tampil di Word: tinggi 65px, lebar mengikuti proporsi */
+                logoTinggi = 65;
+                logoLebar = Math.round(65 * logoKecil.lebar / logoKecil.tinggi);
             } catch (errorLogo) {
                 console.warn('Logo tidak dapat dimuat, Word dibuat tanpa logo:', errorLogo);
             }
 
             const header = data[0];
+            const lebarKolom = [4, 12, 11, 9, 10, 11, 13, 9, 9, 12];
             /* MEMBUAT BARIS TABEL */
             const barisData = data.slice(1).map(row => {
                 if (row.length === 1) {
@@ -1118,15 +1162,29 @@
             }).join('');
             /* TEMPLATE DOKUMEN WORD */
             const dokumen = `
-            <!DOCTYPE html>
-            <html>
+            <html xmlns:o="urn:schemas-microsoft-com:office:office"
+                  xmlns:w="urn:schemas-microsoft-com:office:word"
+                  xmlns="http://www.w3.org/TR/REC-html40">
             <head>
                 <meta charset="UTF-8">
                 <title>Laporan Kunjungan Tamu</title>
+                <!--[if gte mso 9]>
+                <xml>
+                    <w:WordDocument>
+                        <w:View>Print</w:View>
+                        <w:Zoom>100</w:Zoom>
+                        <w:DoNotOptimizeForBrowser/>
+                    </w:WordDocument>
+                </xml>
+                <![endif]-->
                 <style>
-                    @page {
-                        size: A4 landscape;
-                        margin: 1.2cm;
+                    @page Section1 {
+                        size: 841.9pt 595.3pt;
+                        mso-page-orientation: landscape;
+                        margin: 36pt 36pt 36pt 36pt;
+                    }
+                    div.Section1 {
+                        page: Section1;
                     }
                     body {
                         font-family: "Times New Roman", serif;
@@ -1242,18 +1300,19 @@
                 </style>
             </head>
             <body>
+                <div class="Section1">
                 <!-- KOP INSTANSI -->
-                <table class="kop">
+                <table class="kop" width="100%">
                     <tr>
-                        <td class="kolom-logo">
-                            ${logoBase64 ? `<img class="logo" src="${logoBase64}" width="65" height="65">` : ''}
+                        <td class="kolom-logo" width="110" style="width:110px;">
+                            ${logoBase64 ? `<img src="${logoBase64}" width="${logoLebar}" height="${logoTinggi}" style="width:${logoLebar}px;height:${logoTinggi}px;">` : ''}
                         </td>
-                        <td class="identitas">
+                        <td class="identitas" align="center">
                             <h2>PEMERINTAH KABUPATEN CIREBON</h2>
                             <h2>DINAS KEARSIPAN DAN PERPUSTAKAAN</h2>
                             <h2>KABUPATEN CIREBON</h2>
                         </td>
-                        <td style="width:90px;"></td>
+                        <td width="110" style="width:110px;"></td>
                     </tr>
                 </table>
                 <!-- JUDUL LAPORAN -->
@@ -1283,7 +1342,7 @@
                 </table>
                 <!-- DATA KUNJUNGAN -->
                 <h3>DATA KUNJUNGAN</h3>
-                <table class="data">
+                <table class="data" width="100%">
                     <colgroup>
                         <col style="width:4%">
                         <col style="width:12%">
@@ -1298,8 +1357,8 @@
                     </colgroup>
                     <thead>
                         <tr>
-                            ${header.map(value => `
-                                <th>
+                            ${header.map((value, index) => `
+                                <th width="${lebarKolom[index] || 10}%" style="width:${lebarKolom[index] || 10}%;">
                                     ${escapeHtml(value.toUpperCase())}
                                 </th>
                             `).join('')}
@@ -1314,6 +1373,7 @@
                     Dicetak pada:
                     ${new Date().toLocaleDateString('id-ID')}
                 </p>
+                </div>
             </body>
             </html>
             `;
