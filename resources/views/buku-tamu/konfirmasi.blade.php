@@ -229,6 +229,16 @@
             cursor: wait;
         }
 
+        /* TOMBOL GOOGLE CALENDAR */
+        a.download-btn {
+            text-decoration: none;
+        }
+
+        .calendar-btn {
+            width: 100%;
+            margin-top: 10px;
+        }
+
         .home-btn {
             display: flex;
             align-items: center;
@@ -308,7 +318,7 @@
             }
         }
 
-        /* TAMPILAN KHUSUS SAAT MEMBUAT PDF */
+        /* TAMPILAN KHUSUS SAAT MEMBUAT PDF DAN JPG */
         .pdf-mode {
             width: 760px !important;
             max-width: none !important;
@@ -610,6 +620,56 @@
 
             </div>
 
+            @php
+                /*
+                |--------------------------------------------------------------
+                | LINK GOOGLE CALENDAR
+                |--------------------------------------------------------------
+                | Waktu kunjungan dibaca dari format "09:00 - 10:00".
+                | Jika format tidak dikenali, acara dibuat sebagai
+                | acara sepanjang hari pada tanggal kunjungan.
+                */
+                $tanggalKalender = $janjiTemu->tanggal_kunjungan->format('Ymd');
+
+                if (preg_match(
+                    '/(\d{1,2})[:.](\d{2})\s*-\s*(\d{1,2})[:.](\d{2})/',
+                    (string) $janjiTemu->waktu_kunjungan,
+                    $waktu
+                )) {
+                    $mulaiKalender = $tanggalKalender
+                        . 'T' . sprintf('%02d%02d00', $waktu[1], $waktu[2]);
+
+                    $selesaiKalender = $tanggalKalender
+                        . 'T' . sprintf('%02d%02d00', $waktu[3], $waktu[4]);
+
+                    $rentangKalender = $mulaiKalender . '/' . $selesaiKalender;
+                } else {
+                    $rentangKalender = $tanggalKalender . '/'
+                        . $janjiTemu->tanggal_kunjungan->copy()->addDay()->format('Ymd');
+                }
+
+                $urlKalender = 'https://calendar.google.com/calendar/render?' . http_build_query([
+                    'action'   => 'TEMPLATE',
+                    'text'     => 'Kunjungan ke Dinas Arsip dan Perpustakaan Kabupaten Cirebon',
+                    'dates'    => $rentangKalender,
+                    'ctz'      => 'Asia/Jakarta',
+                    'location' => 'Dinas Arsip dan Perpustakaan Kabupaten Cirebon',
+                    'details'  => "Kode Kunjungan: {$janjiTemu->kode_kunjungan}\n"
+                        . "Tujuan: {$janjiTemu->tujuan}\n"
+                        . 'Pegawai Tujuan: ' . ($janjiTemu->pegawai->nama_lengkap ?? '-') . "\n"
+                        . "Status: {$janjiTemu->status}",
+                ]);
+            @endphp
+
+            <a
+                href="{{ $urlKalender }}"
+                target="_blank"
+                rel="noopener"
+                class="download-btn calendar-btn"
+            >
+                📅 Tambahkan ke Google Calendar
+            </a>
+
         </div>
 
         <!-- KEMBALI KE BERANDA -->
@@ -634,16 +694,27 @@
 <script>
 
     // FUNGSI MENGAMBIL GAMBAR BUKTI KUNJUNGAN
-    function ambilGambarBukti(pdfMode = false) {
+    // pdfMode = true  -> tampilan rapi tanpa tombol, lebar tetap 760px
+    //                    (dipakai untuk PDF dan JPG agar hasilnya sama)
+    async function ambilGambarBukti(pdfMode = false, skala = 2) {
 
         const area = document.getElementById('buktiKunjungan');
 
+        // Tunggu font Poppins selesai dimuat agar teks tidak berubah
+        if (document.fonts && document.fonts.ready) {
+            await document.fonts.ready;
+        }
+
         return html2canvas(area, {
-            scale: pdfMode ? 2 : 2,
+            scale: skala,
             backgroundColor: '#ffffff',
             useCORS: true,
             logging: false,
+            scrollX: 0,
             scrollY: 0,
+
+            // Lebar jendela dikunci agar tampilan HP tidak ikut tertangkap
+            windowWidth: pdfMode ? 820 : document.documentElement.clientWidth,
 
             onclone: function(documentClone) {
 
@@ -662,7 +733,14 @@
     // FUNGSI UNDUH JPG
     function unduhJPG() {
 
-        ambilGambarBukti(false).then(function(canvas) {
+        const tombol = document.querySelectorAll('.download-btn');
+
+        tombol.forEach(function(button) {
+            button.disabled = true;
+        });
+
+        // Memakai tampilan yang sama dengan PDF, kualitas lebih tajam
+        ambilGambarBukti(true, 3).then(function(canvas) {
 
             const link = document.createElement('a');
 
@@ -677,6 +755,12 @@
             alert('Gagal mengunduh JPG. Silakan coba kembali.');
 
             console.error(error);
+
+        }).finally(function() {
+
+            tombol.forEach(function(button) {
+                button.disabled = false;
+            });
 
         });
     }

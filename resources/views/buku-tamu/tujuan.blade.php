@@ -128,7 +128,8 @@
         }
 
         select,
-        .search-input {
+        .search-input,
+        .lainnya-input {
             width: 100%;
             min-height: 52px;
             padding: 13px 15px;
@@ -142,9 +143,44 @@
         }
 
         select:focus,
-        .search-input:focus {
+        .search-input:focus,
+        .lainnya-input:focus {
             border-color: var(--maroon);
             box-shadow: 0 0 0 3px rgba(120, 31, 43, .08);
+        }
+
+        /* KOLOM KETERANGAN "LAINNYA" */
+        .lainnya-group {
+            margin-top: -10px;
+            padding: 16px;
+            background: #f8efe9;
+            border: 1px dashed #d9c3b8;
+            border-radius: 13px;
+        }
+
+        .lainnya-group label {
+            margin-bottom: 9px;
+        }
+
+        .lainnya-input.is-invalid {
+            border-color: #c13a48;
+            box-shadow: 0 0 0 3px rgba(193, 58, 72, .10);
+        }
+
+        .field-hint {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .field-error {
+            display: none;
+            margin-top: 8px;
+            color: #9b2535;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.6;
         }
 
         .search-wrapper {
@@ -369,9 +405,14 @@
             }
 
             select,
-            .search-input {
+            .search-input,
+            .lainnya-input {
                 min-height: 49px;
                 font-size: 13px;
+            }
+
+            .lainnya-group {
+                padding: 13px;
             }
 
             .employee-card {
@@ -444,6 +485,21 @@
             Anda temui di Dinas Arsip dan Perpustakaan.
         </p>
 
+        @php
+            /*
+            |--------------------------------------------------------------
+            | PENGISIAN ULANG PILIHAN "LAINNYA"
+            |--------------------------------------------------------------
+            | Jika tujuan yang tersimpan berbentuk "Lainnya: keterangan",
+            | pilihan "Lainnya" dipilih kembali dan keterangannya diisi ulang.
+            */
+            $tujuanLama   = (string) old('tujuan', '');
+            $pakaiLainnya = \Illuminate\Support\Str::startsWith($tujuanLama, 'Lainnya');
+            $teksLainnya  = $pakaiLainnya
+                ? trim(ltrim(substr($tujuanLama, strlen('Lainnya')), ':- '))
+                : '';
+        @endphp
+
         {{-- FORM TUJUAN KUNJUNGAN --}}
         <form
             id="tujuanForm"
@@ -495,11 +551,45 @@
                     </option>
 
                     <option value="Lainnya"
-                        {{ old('tujuan') == 'Lainnya' ? 'selected' : '' }}>
+                        {{ $pakaiLainnya ? 'selected' : '' }}>
                         Lainnya
                     </option>
 
                 </select>
+
+            </div>
+
+
+            {{-- KETERANGAN JIKA MEMILIH "LAINNYA" --}}
+            <div
+                class="form-group lainnya-group"
+                id="lainnyaGroup"
+                style="{{ $pakaiLainnya ? '' : 'display:none;' }}"
+            >
+
+                <label for="tujuanLainnya">
+                    Sebutkan Keperluan Anda
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    id="tujuanLainnya"
+                    class="lainnya-input"
+                    maxlength="150"
+                    autocomplete="off"
+                    placeholder="Contoh: Penelitian skripsi, melihat koleksi arsip"
+                    value="{{ $teksLainnya }}"
+                >
+
+                <p class="field-hint">
+                    Tuliskan keperluan Anda dengan singkat dan jelas
+                    (maksimal 150 karakter).
+                </p>
+
+                <p class="field-error" id="lainnyaError">
+                    Mohon isi keperluan Anda terlebih dahulu.
+                </p>
 
             </div>
 
@@ -720,6 +810,98 @@
 
     if (radioTerpilih) {
         tampilkanPegawaiTerpilih(radioTerpilih);
+    }
+
+
+    // ==========================================
+    // KETERANGAN JIKA MEMILIH "LAINNYA"
+    // ==========================================
+
+    const tujuanForm = document.getElementById('tujuanForm');
+
+    const tujuanSelect = document.getElementById('tujuan');
+
+    const lainnyaGroup = document.getElementById('lainnyaGroup');
+
+    const lainnyaInput = document.getElementById('tujuanLainnya');
+
+    const lainnyaError = document.getElementById('lainnyaError');
+
+
+    // Opsi "Lainnya" di dalam daftar pilihan
+    const opsiLainnya = Array.from(tujuanSelect.options).find(function (opsi) {
+        return opsi.textContent.trim() === 'Lainnya';
+    });
+
+
+    function sembunyikanErrorLainnya() {
+        lainnyaInput.classList.remove('is-invalid');
+        lainnyaError.style.display = 'none';
+    }
+
+
+    // Menampilkan atau menyembunyikan kolom keterangan
+    function aturKolomLainnya() {
+
+        const memilihLainnya = tujuanSelect.value.indexOf('Lainnya') === 0;
+
+        lainnyaGroup.style.display = memilihLainnya ? 'block' : 'none';
+
+        if (memilihLainnya) {
+            lainnyaInput.focus();
+        } else {
+            sembunyikanErrorLainnya();
+        }
+
+    }
+
+
+    tujuanSelect.addEventListener('change', function () {
+
+        // Kembalikan nilai opsi "Lainnya" seperti semula
+        if (opsiLainnya && tujuanSelect.value.indexOf('Lainnya') !== 0) {
+            opsiLainnya.value = 'Lainnya';
+        }
+
+        aturKolomLainnya();
+
+    });
+
+
+    lainnyaInput.addEventListener('input', sembunyikanErrorLainnya);
+
+
+    // Saat formulir dikirim: gabungkan "Lainnya" dengan keterangan
+    // sehingga yang tersimpan sebagai tujuan adalah "Lainnya: keterangan".
+    tujuanForm.addEventListener('submit', function (event) {
+
+        if (tujuanSelect.value.indexOf('Lainnya') !== 0) {
+            return;
+        }
+
+        const keterangan = lainnyaInput.value.replace(/\s+/g, ' ').trim();
+
+        if (keterangan === '') {
+
+            event.preventDefault();
+
+            lainnyaGroup.style.display = 'block';
+            lainnyaInput.classList.add('is-invalid');
+            lainnyaError.style.display = 'block';
+            lainnyaInput.focus();
+
+            return;
+
+        }
+
+        opsiLainnya.value = 'Lainnya: ' + keterangan;
+
+    });
+
+
+    // Tampilkan kolom keterangan jika "Lainnya" sudah terpilih sejak awal
+    if (tujuanSelect.value.indexOf('Lainnya') === 0) {
+        lainnyaGroup.style.display = 'block';
     }
 
 </script>

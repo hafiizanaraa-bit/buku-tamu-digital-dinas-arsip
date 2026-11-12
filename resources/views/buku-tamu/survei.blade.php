@@ -51,17 +51,48 @@
             border-bottom: 1px solid #eee3da;
         }
 
+        /* TOMBOL PANAH KEMBALI (ikon SVG agar tepat di tengah) */
         .back {
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: #f5e9e7;
             color: #781f2b;
-            font-size: 28px;
             text-decoration: none;
-            font-weight: bold;
+            transition: .2s;
+        }
+
+        .back:hover {
+            background: #efdcd9;
+        }
+
+        /* IKON PANAH */
+        .arrow {
+            width: 1.15em;
+            height: 1.15em;
+            flex-shrink: 0;
+            display: block;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.4;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .back .arrow {
+            width: 22px;
+            height: 22px;
         }
 
         .header h2 {
             color: #4f101d;
             font-size: 20px;
             font-weight: 800;
+            line-height: 1.2;
         }
 
         .content {
@@ -170,11 +201,16 @@
 
         .btn {
             flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
             padding: 16px;
             border-radius: 12px;
             font-family: 'DM Sans', sans-serif;
             font-size: 15px;
             font-weight: 800;
+            line-height: 1;
             text-decoration: none;
             cursor: pointer;
             transition: .3s;
@@ -219,6 +255,16 @@
 
             .header {
                 padding: 20px;
+            }
+
+            .back {
+                width: 38px;
+                height: 38px;
+            }
+
+            .back .arrow {
+                width: 20px;
+                height: 20px;
             }
 
             .header h2 {
@@ -270,7 +316,11 @@
     <div class="top-line"></div>
 
     <header class="header">
-        <a href="{{ url('/lokasi') }}" class="back">←</a>
+        <a href="{{ url('/lokasi') }}" class="back" aria-label="Kembali">
+            <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M19 12H5M11 6l-6 6 6 6"/>
+            </svg>
+        </a>
         <h2>Survei Pelayanan</h2>
     </header>
 
@@ -324,7 +374,10 @@
                 </button>
 
                 <button type="submit" class="btn btn-next">
-                    Lanjut →
+                    Lanjut
+                    <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M5 12h14M13 6l6 6-6 6"/>
+                    </svg>
                 </button>
 
             </div>

@@ -59,6 +59,20 @@
             );
         }
 
+        /* IKON PANAH (SVG agar tepat di tengah tombol) */
+
+        .arrow {
+            width: 1.2em;
+            height: 1.2em;
+            flex-shrink: 0;
+            display: block;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.4;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
         /* HEADER */
 
         .header {
@@ -219,6 +233,7 @@
             text-decoration: none;
             font-weight: 800;
             font-size: 14px;
+            line-height: 1;
             border-radius: 13px;
             transition: .3s;
         }
@@ -250,6 +265,7 @@
             text-decoration: none;
             font-size: 15px;
             font-weight: 800;
+            line-height: 1;
             transition: .3s;
         }
 
@@ -487,7 +503,10 @@
                         rel="noopener noreferrer"
                         class="map-button"
                     >
-                        Buka di Google Maps ↗
+                        Buka di Google Maps
+                        <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M7 17L17 7M8 7h9v9"/>
+                        </svg>
                     </a>
 
                 </div>
@@ -501,11 +520,17 @@
         <div class="navigation">
 
             <a href="{{ route('home') }}" class="btn btn-back">
-                ← Kembali
+                <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M19 12H5M11 6l-6 6 6 6"/>
+                </svg>
+                Kembali
             </a>
 
             <a href="{{ route('buku-tamu.survei') }}" class="btn btn-next">
-                Lanjutkan ke Survei →
+                Lanjutkan ke Survei
+                <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M5 12h14M13 6l6 6-6 6"/>
+                </svg>
             </a>
 
         </div>
