@@ -201,7 +201,7 @@
 
         select,
         .search-input,
-        .lainnya-input {
+        .detail-input {
             width: 100%;
             min-height: 54px;
             padding: 13px 18px;
@@ -217,18 +217,18 @@
 
         select:focus,
         .search-input:focus,
-        .lainnya-input:focus {
+        .detail-input:focus {
             border-color: var(--navy);
             box-shadow: 0 0 0 4px rgba(201, 162, 77, .22);
         }
 
         .search-input::placeholder,
-        .lainnya-input::placeholder {
+        .detail-input::placeholder {
             color: #a3adbb;
         }
 
-        /* KOLOM KETERANGAN "LAINNYA" */
-        .lainnya-group {
+        /* KOLOM RINCIAN TUJUAN */
+        .detail-group {
             margin-top: -10px;
             padding: 18px;
             background: rgba(201, 162, 77, .10);
@@ -236,11 +236,11 @@
             border-radius: 16px;
         }
 
-        .lainnya-group label {
+        .detail-group label {
             margin-bottom: 9px;
         }
 
-        .lainnya-input.is-invalid {
+        .detail-input.is-invalid {
             border-color: var(--danger);
             box-shadow: 0 0 0 3px rgba(193, 58, 72, .12);
         }
@@ -259,6 +259,40 @@
             font-size: 12px;
             font-weight: 700;
             line-height: 1.6;
+        }
+
+        /* KETERANGAN TUJUAN */
+        .tujuan-desc {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-top: 12px;
+            padding: 13px 16px;
+            background: rgba(18, 41, 74, .05);
+            border-left: 3px solid var(--gold);
+            border-radius: 12px;
+        }
+
+        .tujuan-desc-icon {
+            width: 22px;
+            height: 22px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: var(--navy-dark);
+            font-family: 'Playfair Display', serif;
+            font-size: 13px;
+            font-weight: 800;
+            font-style: italic;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+        }
+
+        .tujuan-desc p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.7;
         }
 
         /* PENCARIAN PEGAWAI */
@@ -541,12 +575,12 @@
 
             select,
             .search-input,
-            .lainnya-input {
+            .detail-input {
                 min-height: 50px;
                 font-size: 13px;
             }
 
-            .lainnya-group {
+            .detail-group {
                 padding: 14px;
             }
 
@@ -644,16 +678,64 @@
         @php
             /*
             |--------------------------------------------------------------
-            | PENGISIAN ULANG PILIHAN "LAINNYA"
+            | DAFTAR TUJUAN KUNJUNGAN
             |--------------------------------------------------------------
-            | Jika tujuan yang tersimpan berbentuk "Lainnya: keterangan",
-            | pilihan "Lainnya" dipilih kembali dan keterangannya diisi ulang.
+            | desc        : penjelasan yang tampil di bawah pilihan tujuan
+            | label       : pertanyaan rincian yang harus dijawab pengunjung
+            | placeholder : contoh jawaban
+            | Tujuan disimpan dengan format "Tujuan: rincian",
+            | misalnya "Konsultasi: pengelolaan arsip kantor desa".
             */
-            $tujuanLama   = (string) old('tujuan', '');
-            $pakaiLainnya = \Illuminate\Support\Str::startsWith($tujuanLama, 'Lainnya');
-            $teksLainnya  = $pakaiLainnya
-                ? trim(ltrim(substr($tujuanLama, strlen('Lainnya')), ':- '))
-                : '';
+            $daftarTujuan = [
+                'Konsultasi' => [
+                    'desc'        => 'Berdiskusi dengan pegawai mengenai pengelolaan arsip, kepustakaan, atau layanan dinas.',
+                    'label'       => 'Konsultasi tentang apa?',
+                    'placeholder' => 'Contoh: pengelolaan arsip kantor desa, penataan perpustakaan sekolah',
+                ],
+                'Permohonan Informasi' => [
+                    'desc'        => 'Meminta informasi, data, atau layanan publik yang tersedia di Dinas Arsip dan Perpustakaan.',
+                    'label'       => 'Informasi apa yang Anda butuhkan?',
+                    'placeholder' => 'Contoh: data koleksi arsip daerah, syarat keanggotaan perpustakaan',
+                ],
+                'Penelitian' => [
+                    'desc'        => 'Melakukan penelitian, skripsi, atau tugas akhir dengan memanfaatkan arsip dan koleksi perpustakaan.',
+                    'label'       => 'Topik atau judul penelitian Anda?',
+                    'placeholder' => 'Contoh: skripsi tentang sejarah perdagangan di Cirebon',
+                ],
+                'Pengambilan Dokumen' => [
+                    'desc'        => 'Mengambil dokumen yang sebelumnya sudah diajukan atau diproses oleh dinas.',
+                    'label'       => 'Dokumen apa yang akan diambil?',
+                    'placeholder' => 'Contoh: salinan arsip, surat rekomendasi penelitian',
+                ],
+                'Koordinasi' => [
+                    'desc'        => 'Berkoordinasi dengan pegawai terkait pekerjaan, kegiatan, atau kerja sama antarinstansi.',
+                    'label'       => 'Koordinasi mengenai apa?',
+                    'placeholder' => 'Contoh: jadwal pembinaan arsip, kerja sama kegiatan literasi',
+                ],
+                'Keperluan Perpustakaan' => [
+                    'desc'        => 'Keperluan yang berkaitan dengan layanan perpustakaan, seperti membaca, meminjam, atau mengembalikan buku.',
+                    'label'       => 'Keperluan perpustakaan apa?',
+                    'placeholder' => 'Contoh: mengembalikan buku, mendaftar anggota, membaca di tempat',
+                ],
+                'Lainnya' => [
+                    'desc'        => 'Pilih ini jika keperluan Anda tidak termasuk dalam pilihan di atas.',
+                    'label'       => 'Sebutkan keperluan Anda',
+                    'placeholder' => 'Contoh: melihat koleksi arsip, kunjungan studi',
+                ],
+            ];
+
+            // Pengisian ulang setelah validasi gagal ("Tujuan: rincian")
+            $tujuanLama  = trim((string) old('tujuan', ''));
+            $tujuanDasar = '';
+            $tujuanRinci = '';
+
+            foreach (array_keys($daftarTujuan) as $namaTujuan) {
+                if (\Illuminate\Support\Str::startsWith($tujuanLama, $namaTujuan)) {
+                    $tujuanDasar = $namaTujuan;
+                    $tujuanRinci = trim(ltrim(substr($tujuanLama, strlen($namaTujuan)), ':- '));
+                    break;
+                }
+            }
         @endphp
 
         {{-- FORM TUJUAN KUNJUNGAN --}}
@@ -672,82 +754,67 @@
                     <span class="required">*</span>
                 </label>
 
-                <select name="tujuan" id="tujuan" required>
+                <select id="tujuan" required>
 
                     <option value="">Pilih tujuan kunjungan</option>
 
-                    <option value="Konsultasi"
-                        {{ old('tujuan') == 'Konsultasi' ? 'selected' : '' }}>
-                        Konsultasi
-                    </option>
-
-                    <option value="Permohonan Informasi"
-                        {{ old('tujuan') == 'Permohonan Informasi' ? 'selected' : '' }}>
-                        Permohonan Informasi
-                    </option>
-
-                    <option value="Penelitian"
-                        {{ old('tujuan') == 'Penelitian' ? 'selected' : '' }}>
-                        Penelitian
-                    </option>
-
-                    <option value="Pengambilan Dokumen"
-                        {{ old('tujuan') == 'Pengambilan Dokumen' ? 'selected' : '' }}>
-                        Pengambilan Dokumen
-                    </option>
-
-                    <option value="Koordinasi"
-                        {{ old('tujuan') == 'Koordinasi' ? 'selected' : '' }}>
-                        Koordinasi
-                    </option>
-
-                    <option value="Keperluan Perpustakaan"
-                        {{ old('tujuan') == 'Keperluan Perpustakaan' ? 'selected' : '' }}>
-                        Keperluan Perpustakaan
-                    </option>
-
-                    <option value="Lainnya"
-                        {{ $pakaiLainnya ? 'selected' : '' }}>
-                        Lainnya
-                    </option>
+                    @foreach ($daftarTujuan as $namaTujuan => $dataTujuan)
+                        <option
+                            value="{{ $namaTujuan }}"
+                            {{ $tujuanDasar === $namaTujuan ? 'selected' : '' }}
+                        >
+                            {{ $namaTujuan }}
+                        </option>
+                    @endforeach
 
                 </select>
+
+                {{-- KETERANGAN TUJUAN YANG DIPILIH --}}
+                <div class="tujuan-desc" id="tujuanDesc">
+                    <span class="tujuan-desc-icon">i</span>
+                    <p id="tujuanDescText">
+                        Pilih tujuan kunjungan untuk melihat penjelasannya.
+                    </p>
+                </div>
 
             </div>
 
 
-            {{-- KETERANGAN JIKA MEMILIH "LAINNYA" --}}
+            {{-- RINCIAN TUJUAN (muncul setelah tujuan dipilih) --}}
             <div
-                class="form-group lainnya-group"
-                id="lainnyaGroup"
-                style="{{ $pakaiLainnya ? '' : 'display:none;' }}"
+                class="form-group detail-group"
+                id="detailGroup"
+                style="{{ $tujuanDasar !== '' ? '' : 'display:none;' }}"
             >
 
-                <label for="tujuanLainnya">
-                    Sebutkan Keperluan Anda
+                <label for="tujuanDetail">
+                    <span id="detailLabelText">Jelaskan keperluan Anda</span>
                     <span class="required">*</span>
                 </label>
 
                 <input
                     type="text"
-                    id="tujuanLainnya"
-                    class="lainnya-input"
+                    id="tujuanDetail"
+                    class="detail-input"
                     maxlength="150"
                     autocomplete="off"
-                    placeholder="Contoh: Penelitian skripsi, melihat koleksi arsip"
-                    value="{{ $teksLainnya }}"
+                    placeholder="Jelaskan keperluan Anda"
+                    value="{{ $tujuanRinci }}"
                 >
 
                 <p class="field-hint">
-                    Tuliskan keperluan Anda dengan singkat dan jelas
-                    (maksimal 150 karakter).
+                    Tuliskan dengan singkat dan jelas (maksimal 150 karakter)
+                    agar pegawai dapat menyiapkan layanan yang sesuai.
                 </p>
 
-                <p class="field-error" id="lainnyaError">
-                    Mohon isi keperluan Anda terlebih dahulu.
+                <p class="field-error" id="detailError">
+                    Mohon isi rincian keperluan Anda terlebih dahulu.
                 </p>
 
             </div>
+
+            {{-- Nilai akhir yang dikirim ke server: "Tujuan: rincian" --}}
+            <input type="hidden" name="tujuan" id="tujuanFinal" value="{{ old('tujuan') }}">
 
 
             {{-- PILIH PEGAWAI --}}
@@ -978,43 +1045,55 @@
 
 
     // ==========================================
-    // KETERANGAN JIKA MEMILIH "LAINNYA"
+    // KETERANGAN DAN RINCIAN TUJUAN KUNJUNGAN
     // ==========================================
+
+    const DAFTAR_TUJUAN = @json($daftarTujuan);
 
     const tujuanForm = document.getElementById('tujuanForm');
 
     const tujuanSelect = document.getElementById('tujuan');
 
-    const lainnyaGroup = document.getElementById('lainnyaGroup');
+    const tujuanDescText = document.getElementById('tujuanDescText');
 
-    const lainnyaInput = document.getElementById('tujuanLainnya');
+    const detailGroup = document.getElementById('detailGroup');
 
-    const lainnyaError = document.getElementById('lainnyaError');
+    const detailLabelText = document.getElementById('detailLabelText');
+
+    const detailInput = document.getElementById('tujuanDetail');
+
+    const detailError = document.getElementById('detailError');
+
+    const tujuanFinal = document.getElementById('tujuanFinal');
+
+    const teksAwal = 'Pilih tujuan kunjungan untuk melihat penjelasannya.';
 
 
-    // Opsi "Lainnya" di dalam daftar pilihan
-    const opsiLainnya = Array.from(tujuanSelect.options).find(function (opsi) {
-        return opsi.textContent.trim() === 'Lainnya';
-    });
-
-
-    function sembunyikanErrorLainnya() {
-        lainnyaInput.classList.remove('is-invalid');
-        lainnyaError.style.display = 'none';
+    function sembunyikanErrorDetail() {
+        detailInput.classList.remove('is-invalid');
+        detailError.style.display = 'none';
     }
 
 
-    // Menampilkan atau menyembunyikan kolom keterangan
-    function aturKolomLainnya() {
+    // Menampilkan penjelasan dan kolom rincian sesuai tujuan
+    function perbaruiTujuan(fokus) {
 
-        const memilihLainnya = tujuanSelect.value.indexOf('Lainnya') === 0;
+        const data = DAFTAR_TUJUAN[tujuanSelect.value];
 
-        lainnyaGroup.style.display = memilihLainnya ? 'block' : 'none';
+        if (!data) {
+            tujuanDescText.textContent = teksAwal;
+            detailGroup.style.display = 'none';
+            sembunyikanErrorDetail();
+            return;
+        }
 
-        if (memilihLainnya) {
-            lainnyaInput.focus();
-        } else {
-            sembunyikanErrorLainnya();
+        tujuanDescText.textContent = data.desc;
+        detailLabelText.textContent = data.label;
+        detailInput.placeholder = data.placeholder;
+        detailGroup.style.display = 'block';
+
+        if (fokus) {
+            detailInput.focus();
         }
 
     }
@@ -1022,51 +1101,49 @@
 
     tujuanSelect.addEventListener('change', function () {
 
-        // Kembalikan nilai opsi "Lainnya" seperti semula
-        if (opsiLainnya && tujuanSelect.value.indexOf('Lainnya') !== 0) {
-            opsiLainnya.value = 'Lainnya';
-        }
+        sembunyikanErrorDetail();
 
-        aturKolomLainnya();
+        perbaruiTujuan(true);
 
     });
 
 
-    lainnyaInput.addEventListener('input', sembunyikanErrorLainnya);
+    detailInput.addEventListener('input', sembunyikanErrorDetail);
 
 
-    // Saat formulir dikirim: gabungkan "Lainnya" dengan keterangan
-    // sehingga yang tersimpan sebagai tujuan adalah "Lainnya: keterangan".
+    // Saat formulir dikirim: gabungkan menjadi "Tujuan: rincian"
     tujuanForm.addEventListener('submit', function (event) {
 
-        if (tujuanSelect.value.indexOf('Lainnya') !== 0) {
+        const nama = tujuanSelect.value;
+
+        // Jika belum memilih tujuan, biarkan validasi bawaan browser bekerja
+        if (nama === '') {
             return;
         }
 
-        const keterangan = lainnyaInput.value.replace(/\s+/g, ' ').trim();
+        const rincian = detailInput.value.replace(/\s+/g, ' ').trim();
 
-        if (keterangan === '') {
+        if (rincian === '') {
 
             event.preventDefault();
 
-            lainnyaGroup.style.display = 'block';
-            lainnyaInput.classList.add('is-invalid');
-            lainnyaError.style.display = 'block';
-            lainnyaInput.focus();
+            detailGroup.style.display = 'block';
+            detailInput.classList.add('is-invalid');
+            detailError.style.display = 'block';
+            detailInput.focus();
 
             return;
 
         }
 
-        opsiLainnya.value = 'Lainnya: ' + keterangan;
+        tujuanFinal.value = nama + ': ' + rincian;
 
     });
 
 
-    // Tampilkan kolom keterangan jika "Lainnya" sudah terpilih sejak awal
-    if (tujuanSelect.value.indexOf('Lainnya') === 0) {
-        lainnyaGroup.style.display = 'block';
-    }
+    // Tampilkan penjelasan sejak awal jika tujuan sudah terpilih
+    // (misalnya setelah validasi gagal atau tombol kembali ditekan)
+    perbaruiTujuan(false);
 
 </script>
 

@@ -9,6 +9,10 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\PermohonanKunjunganController;
 use App\Http\Controllers\LaporanController;
 
+// [BARU] Kehadiran pegawai
+use App\Http\Controllers\KehadiranController;
+use App\Http\Controllers\KehadiranAdminController;
+
 
 // ==================================================
 // HALAMAN PENGUNJUNG
@@ -17,6 +21,10 @@ use App\Http\Controllers\LaporanController;
 // 1. BERANDA PENGUNJUNG
 Route::get('/', [BukuTamuController::class, 'index'])
     ->name('home');
+
+// [BARU] KEHADIRAN PEGAWAI (tampil sebelum lokasi)
+Route::get('/kehadiran', [KehadiranController::class, 'index'])
+    ->name('buku-tamu.kehadiran');
 
 // 2. INFORMASI LOKASI
 Route::get('/lokasi', [BukuTamuController::class, 'lokasi'])
@@ -117,6 +125,20 @@ Route::prefix('admin')
 
 
         // ==================================================
+        // [BARU] KEHADIRAN PEGAWAI
+        // ==================================================
+
+        Route::get('/kehadiran', [KehadiranAdminController::class, 'index'])
+            ->name('kehadiran.index');
+
+        Route::post('/kehadiran', [KehadiranAdminController::class, 'simpan'])
+            ->name('kehadiran.simpan');
+
+        Route::post('/kehadiran/import', [KehadiranAdminController::class, 'import'])
+            ->name('kehadiran.import');
+
+
+        // ==================================================
         // PERMOHONAN KUNJUNGAN
         // ==================================================
 
@@ -149,6 +171,12 @@ Route::prefix('admin')
 
         Route::get('/laporan', [LaporanController::class, 'index'])
             ->name('laporan.index');
+
+        // Laporan mingguan sekarang menyatu di halaman Laporan.
+        // Rute lama dipertahankan agar tautan/bookmark lama tetap berfungsi.
+        Route::get('/laporan/mingguan', function () {
+            return redirect()->route('admin.laporan.index', ['jenis_laporan' => 'mingguan']);
+        })->name('laporan.mingguan');
 
     });
 

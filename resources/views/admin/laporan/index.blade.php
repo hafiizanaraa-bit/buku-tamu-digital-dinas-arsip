@@ -73,15 +73,19 @@
         font-weight: bold;
         color: #555;
     }
-    .filter-group select {
+    .filter-group select,
+    .filter-group input[type="date"] {
         width: 100%;
         padding: 11px;
         border: 1px solid #ddd;
         border-radius: 8px;
         background: white;
         outline: none;
+        font-size: 13px;
+        color: #35103F;
     }
-    .filter-group select:focus {
+    .filter-group select:focus,
+    .filter-group input[type="date"]:focus {
         border-color: #8955ED;
         box-shadow: 0 0 0 3px rgba(137, 85, 237, 0.10);
     }
@@ -97,6 +101,39 @@
     }
     .btn-filter:hover {
         background: #7040CE;
+    }
+    /* =========================================
+       NAVIGASI MINGGU (khusus laporan mingguan)
+    ========================================= */
+    .week-nav {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    .week-label {
+        background: white;
+        color: #35103F;
+        padding: 11px 18px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: bold;
+        box-shadow: 0 3px 12px rgba(53, 16, 63, 0.06);
+    }
+    .btn-week {
+        display: inline-block;
+        padding: 11px 16px;
+        border-radius: 8px;
+        background: #F0E8FF;
+        color: #8955ED;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+    .btn-week:hover {
+        background: #E3D4FF;
     }
     /* =========================================
        TOMBOL EXPORT
@@ -164,6 +201,41 @@
         background: #FAF8FD;
     }
     /* =========================================
+       TABEL REKAP MINGGUAN
+    ========================================= */
+    .table-rekap {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .table-rekap th,
+    .table-rekap td {
+        padding: 11px 13px;
+        border-bottom: 1px solid #eee;
+        text-align: left;
+        font-size: 13px;
+    }
+    .table-rekap th {
+        background: #F3EDF9;
+        color: #35103F;
+        white-space: nowrap;
+    }
+    .table-rekap td {
+        color: #555;
+    }
+    .table-rekap .angka {
+        text-align: center;
+    }
+    .table-rekap tfoot td {
+        font-weight: bold;
+        color: #35103F;
+        background: #FAF8FD;
+    }
+    .rekap-note {
+        margin-top: 10px;
+        color: #888;
+        font-size: 12px;
+    }
+    /* =========================================
        STATUS KUNJUNGAN
     ========================================= */
     .status {
@@ -221,6 +293,14 @@
         .btn-export {
             width: 100%;
         }
+        .week-nav {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .btn-week,
+        .week-label {
+            text-align: center;
+        }
     }
     /* =========================================
        CETAK / EXPORT PDF A4 LANDSCAPE
@@ -246,6 +326,7 @@
         footer,
         .filter-container,
         .export-container,
+        .week-nav,
         .page-title,
         .page-description,
         button {
@@ -326,7 +407,7 @@
         /* TABEL */
         .table-container {
             padding: 0 !important;
-            margin: 0 !important;
+            margin: 0 0 12px !important;
             overflow: visible !important;
             box-shadow: none !important;
             width: 100% !important;
@@ -415,6 +496,37 @@
         .table-laporan thead {
             display: table-header-group !important;
         }
+        /* TABEL REKAP MINGGUAN */
+        .table-rekap {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            font-family: "Times New Roman", serif !important;
+        }
+        .table-rekap th,
+        .table-rekap td {
+            border: 1px solid #555 !important;
+            padding: 5px 4px !important;
+            font-family: "Times New Roman", serif !important;
+            font-size: 8pt !important;
+            line-height: 1.2 !important;
+            color: #000 !important;
+            background: transparent !important;
+            vertical-align: middle !important;
+        }
+        .table-rekap th {
+            text-align: center !important;
+            font-weight: bold !important;
+            background: #E8DDF8 !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .table-rekap tbody tr {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+        .rekap-note {
+            display: none !important;
+        }
         /* STATUS */
         .status {
             display: inline !important;
@@ -454,12 +566,7 @@
     <h2>LAPORAN KUNJUNGAN TAMU</h2>
     <p>
         Periode:
-        {{ ($jenisLaporan ?? 'bulanan') == 'tahunan'
-            ? 'Tahun ' . ($tahun ?? date('Y'))
-            : \Carbon\Carbon::create()
-                ->month((int) ($bulan ?? date('m')))
-                ->translatedFormat('F') . ' ' . ($tahun ?? date('Y'))
-        }}
+        {{ $jenisLaporan === 'mingguan' ? 'Minggu ' : '' }}{{ $labelPeriode }}
     </p>
 </div>
 {{-- =========================================
@@ -481,10 +588,17 @@
         action="{{ route('admin.laporan.index') }}"
         method="GET"
         class="filter-form"
+        id="filterForm"
     >
         <div class="filter-group">
             <label>Jenis Laporan</label>
-            <select name="jenis_laporan">
+            <select name="jenis_laporan" id="jenisLaporan">
+                <option
+                    value="mingguan"
+                    {{ ($jenisLaporan ?? 'bulanan') == 'mingguan' ? 'selected' : '' }}
+                >
+                    Laporan Mingguan
+                </option>
                 <option
                     value="bulanan"
                     {{ ($jenisLaporan ?? 'bulanan') == 'bulanan' ? 'selected' : '' }}
@@ -499,7 +613,16 @@
                 </option>
             </select>
         </div>
-        <div class="filter-group">
+        {{-- Khusus laporan mingguan: pilih tanggal apa pun di dalam minggu yang dimaksud --}}
+        <div class="filter-group" data-untuk="mingguan">
+            <label>Tanggal (dalam minggu yang dipilih)</label>
+            <input
+                type="date"
+                name="tanggal"
+                value="{{ $tanggalFilter ?? date('Y-m-d') }}"
+            >
+        </div>
+        <div class="filter-group" data-untuk="bulanan">
             <label>Bulan</label>
             <select name="bulan">
                 @foreach (range(1, 12) as $nomorBulan)
@@ -514,7 +637,7 @@
                 @endforeach
             </select>
         </div>
-        <div class="filter-group">
+        <div class="filter-group" data-untuk="bulanan tahunan">
             <label>Tahun</label>
             <select name="tahun">
                 @foreach (range(date('Y') - 5, date('Y') + 1) as $tahunPilihan)
@@ -532,6 +655,32 @@
         </button>
     </form>
 </div>
+{{-- =========================================
+     NAVIGASI MINGGU (hanya laporan mingguan)
+========================================= --}}
+@if ($jenisLaporan === 'mingguan')
+    <div class="week-nav">
+        <a
+            href="{{ route('admin.laporan.index', ['jenis_laporan' => 'mingguan', 'tanggal' => $mingguSebelumnya]) }}"
+            class="btn-week"
+        >
+            ← Minggu Sebelumnya
+        </a>
+        <span class="week-label">Minggu: {{ $labelPeriode }}</span>
+        <a
+            href="{{ route('admin.laporan.index', ['jenis_laporan' => 'mingguan', 'tanggal' => $mingguBerikutnya]) }}"
+            class="btn-week"
+        >
+            Minggu Berikutnya →
+        </a>
+        <a
+            href="{{ route('admin.laporan.index', ['jenis_laporan' => 'mingguan']) }}"
+            class="btn-week"
+        >
+            Minggu Ini
+        </a>
+    </div>
+@endif
 {{-- =========================================
      RINGKASAN LAPORAN
 ========================================= --}}
@@ -583,6 +732,50 @@
     </button>
 </div>
 {{-- =========================================
+     REKAP PER HARI (hanya laporan mingguan)
+========================================= --}}
+@if ($jenisLaporan === 'mingguan')
+    <div class="table-container">
+        <h3>Rekap Kunjungan per Hari</h3>
+        <table class="table-rekap">
+            <thead>
+                <tr>
+                    <th>Hari</th>
+                    <th>Tanggal</th>
+                    <th class="angka">Total</th>
+                    <th class="angka">Diterima</th>
+                    <th class="angka">Ditolak</th>
+                    <th class="angka">Menunggu</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($rekapHarian as $baris)
+                    <tr>
+                        <td>{{ $baris['hari']->translatedFormat('l') }}</td>
+                        <td>{{ $baris['hari']->translatedFormat('d F Y') }}</td>
+                        <td class="angka">{{ $baris['total'] }}</td>
+                        <td class="angka">{{ $baris['diterima'] }}</td>
+                        <td class="angka">{{ $baris['ditolak'] }}</td>
+                        <td class="angka">{{ $baris['menunggu'] }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2">Total Minggu Ini</td>
+                    <td class="angka">{{ $rekapHarian->sum('total') }}</td>
+                    <td class="angka">{{ $rekapHarian->sum('diterima') }}</td>
+                    <td class="angka">{{ $rekapHarian->sum('ditolak') }}</td>
+                    <td class="angka">{{ $rekapHarian->sum('menunggu') }}</td>
+                </tr>
+            </tfoot>
+        </table>
+        <p class="rekap-note">
+            Sabtu dan Minggu hanya ditampilkan jika ada kunjungan.
+        </p>
+    </div>
+@endif
+{{-- =========================================
      TABEL DATA LAPORAN
 ========================================= --}}
 <div class="table-container">
@@ -610,7 +803,7 @@
                     <td>{{ $item->nama_tamu }}</td>
                     <td>{{ $item->telepon }}</td>
                     <td>{{ $item->instansi ?? '-' }}</td>
-                    <td>{{ $item->pegawai->nama ?? '-' }}</td>
+                    <td>{{ $item->pegawai->nama_lengkap ?? '-' }}</td>
                     <td>{{ $item->tujuan }}</td>
                     <td>
                         {{ $item->tanggal_kunjungan
@@ -646,10 +839,93 @@
     </table>
 </div>
 {{-- =========================================
+     REKAP TUJUAN DAN KEHADIRAN (hanya laporan mingguan)
+========================================= --}}
+@if ($jenisLaporan === 'mingguan')
+    <div class="table-container">
+        <h3>Rekap Kunjungan per Tujuan</h3>
+        <table class="table-rekap">
+            <thead>
+                <tr>
+                    <th>Tujuan Kunjungan</th>
+                    <th class="angka">Jumlah</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($rekapTujuan as $namaTujuan => $jumlahTujuan)
+                    <tr>
+                        <td>{{ $namaTujuan }}</td>
+                        <td class="angka">{{ $jumlahTujuan }}</td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="2" class="empty-data">
+                            Belum ada kunjungan pada minggu ini.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+    <div class="table-container">
+        <h3>Rekap Kehadiran Pegawai Minggu Ini</h3>
+        <table class="table-rekap">
+            <thead>
+                <tr>
+                    <th>Pegawai</th>
+                    <th>Jabatan</th>
+                    <th class="angka">Ada di Ruangan (hari)</th>
+                    <th class="angka">Tidak Ada</th>
+                    <th class="angka">Dinas Luar / Izin / Cuti</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($rekapKehadiran as $baris)
+                    <tr>
+                        <td>{{ $baris['nama'] }}</td>
+                        <td>{{ $baris['jabatan'] ?? '-' }}</td>
+                        <td class="angka">{{ $baris['hadir'] }}</td>
+                        <td class="angka">{{ $baris['tidak_hadir'] }}</td>
+                        <td class="angka">{{ $baris['lainnya'] }}</td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="empty-data">
+                            Belum ada data pegawai.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+@endif
+{{-- =========================================
      JAVASCRIPT EXPORT EXCEL DAN WORD
 ========================================= --}}
 <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
 <script>
+    /* =========================================
+       FILTER: tampilkan kolom sesuai jenis laporan
+       (mingguan: tanggal | bulanan: bulan + tahun | tahunan: tahun)
+    ========================================= */
+    function aturFilter() {
+        const jenis = document.getElementById('jenisLaporan').value;
+
+        document.querySelectorAll('#filterForm [data-untuk]').forEach(function (grup) {
+            const tampil = grup.dataset.untuk.split(' ').indexOf(jenis) !== -1;
+
+            grup.style.display = tampil ? '' : 'none';
+
+            /* kolom yang disembunyikan tidak ikut dikirim */
+            grup.querySelectorAll('select, input').forEach(function (isian) {
+                isian.disabled = !tampil;
+            });
+        });
+    }
+
+    document.getElementById('jenisLaporan').addEventListener('change', aturFilter);
+    aturFilter();
+
     /* =========================================
        DATA LAPORAN
     ========================================= */
@@ -663,26 +939,12 @@
     ========================================= */
     function namaPeriode() {
         const jenis = @json($jenisLaporan ?? 'bulanan');
-        const bulan = @json($bulan ?? date('m'));
-        const tahun = @json($tahun ?? date('Y'));
-        const namaBulan = [
-            'Januari',
-            'Februari',
-            'Maret',
-            'April',
-            'Mei',
-            'Juni',
-            'Juli',
-            'Agustus',
-            'September',
-            'Oktober',
-            'November',
-            'Desember'
-        ];
-        if (jenis === 'tahunan') {
-            return 'Tahun ' + tahun;
+        const label = @json($labelPeriode);
+        if (jenis === 'mingguan') {
+            return 'Minggu ' + label;
         }
-        return namaBulan[parseInt(bulan, 10) - 1] + ' ' + tahun;
+        /* bulanan: "November 2026" | tahunan: "Tahun 2026" */
+        return label;
     }
     /* =========================================
        NAMA FILE
@@ -691,10 +953,14 @@
         const jenis = @json($jenisLaporan ?? 'bulanan');
         const bulan = @json($bulan ?? date('m'));
         const tahun = @json($tahun ?? date('Y'));
+        const mingguMulai = @json($mingguAwalTanggal);
+        if (jenis === 'mingguan') {
+            return 'Laporan_Kunjungan_Minggu_' + mingguMulai;
+        }
         if (jenis === 'tahunan') {
             return 'Laporan_Kunjungan_' + tahun;
         }
-        return 'Laporan_Kunjungan_' + tahun + '_' + bulan;
+        return 'Laporan_Kunjungan_' + tahun + '_' + String(bulan).padStart(2, '0');
     }
     /* =========================================
        AMBIL DATA TABEL
@@ -1379,7 +1645,7 @@
             `;
             /* MEMBUAT FILE WORD */
             const blob = new Blob(
-                ['\ufeff', dokumen],
+                ['﻿', dokumen],
                 {
                     type: 'application/msword'
                 }

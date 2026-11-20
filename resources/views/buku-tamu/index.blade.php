@@ -288,9 +288,10 @@
             color: white;
             font-size: 12px;
             font-weight: 600;
+            line-height: 1.6;
             background: rgba(11, 27, 51, .55);
             border: 1px solid rgba(255, 255, 255, .25);
-            border-radius: 999px;
+            border-radius: 18px;
             -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
         }
@@ -736,7 +737,10 @@
                             <circle cx="12" cy="12" r="9"/>
                             <path d="M12 7v5l3 2"/>
                         </svg>
-                        Senin - Jumat · 08.00 - 16.00 WIB
+                        <span>
+                            Senin - Kamis · 07.30 - 15.30 WIB<br>
+                            Jumat · 07.30 - 16.00 WIB
+                        </span>
                     </div>
 
                     <div class="image-caption">
@@ -780,7 +784,7 @@
 
                 <noscript>
                     <p class="swipe-hint">
-                        <a href="{{ route('buku-tamu.lokasi') }}">Klik di sini untuk memulai</a>
+                        <a href="{{ route('buku-tamu.kehadiran') }}">Klik di sini untuk memulai</a>
                     </p>
                 </noscript>
 
@@ -805,7 +809,7 @@
     <script>
         (function () {
 
-            const tujuan = "{{ route('buku-tamu.lokasi') }}";
+            const tujuan = "{{ route('buku-tamu.kehadiran') }}";
 
             const slider = document.getElementById('slider');
             const handle = document.getElementById('sliderHandle');

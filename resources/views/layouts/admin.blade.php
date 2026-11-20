@@ -597,6 +597,45 @@
             }
         }
 
+        /* =========================================
+           CETAK (PRINT): sembunyikan sidebar & navbar
+           supaya laporan tercetak penuh
+        ========================================= */
+
+        @media print {
+
+            html, body {
+                height: auto;
+                overflow: visible;
+                background: #FFFFFF;
+            }
+
+            .layout {
+                display: block;
+                height: auto;
+                min-height: 0;
+                padding: 0;
+            }
+
+            .sidebar,
+            .navbar {
+                display: none !important;
+            }
+
+            .main-area {
+                position: static;
+                height: auto;
+                border-radius: 0;
+                overflow: visible;
+                box-shadow: none;
+            }
+
+            .content {
+                overflow: visible;
+                padding: 0;
+            }
+        }
+
     </style>
 
     @stack('styles')
@@ -658,6 +697,16 @@
 
                 </a>
 
+                <!-- [BARU] MENU KEHADIRAN PEGAWAI -->
+
+                <a href="{{ route('admin.kehadiran.index') }}"
+                   class="{{ request()->routeIs('admin.kehadiran.*') ? 'active' : '' }}">
+
+                    <span class="menu-icon">☑</span>
+                    <span>Kehadiran Pegawai</span>
+
+                </a>
+
                 <!-- MENU PERMOHONAN KUNJUNGAN -->
 
                 <a href="{{ route('admin.permohonan.index') }}"
@@ -678,7 +727,7 @@
 
                 </a>
 
-                <!-- MENU LAPORAN -->
+                <!-- MENU LAPORAN (mingguan, bulanan, tahunan dalam satu halaman) -->
 
                 <a href="{{ route('admin.laporan.index') }}"
                    class="{{ request()->routeIs('admin.laporan.*') ? 'active' : '' }}">

@@ -250,6 +250,48 @@
     }
 
     /* =========================================
+       [BARU] PANEL KEHADIRAN HARI INI & AKSES CEPAT
+    ========================================= */
+
+    .quick-panel {
+        margin-top: 20px;
+    }
+
+    .quick-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 16px;
+    }
+
+    .quick-link {
+        display: inline-block;
+        padding: 10px 18px;
+        border-radius: 999px;
+        background: #8955ED;
+        color: #FFFFFF;
+        font-size: 11px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background 0.2s, transform 0.2s;
+    }
+
+    .quick-link:hover {
+        background: #F34F85;
+        transform: translateY(-2px);
+    }
+
+    .quick-link.light {
+        background: #F0E8FF;
+        color: #8955ED;
+    }
+
+    .quick-link.light:hover {
+        background: #F34F85;
+        color: #FFFFFF;
+    }
+
+    /* =========================================
        TAMPILAN RESPONSIF TABLET
     ========================================= */
 
@@ -587,6 +629,62 @@
 
             </div>
 
+
+        </div>
+
+
+        <!-- =====================================
+             [BARU] KEHADIRAN PEGAWAI HARI INI
+             & AKSES CEPAT
+        ====================================== -->
+
+        @php
+            $hadirHariIni = \App\Models\KehadiranPegawai::whereDate('tanggal', now()->toDateString())
+                ->where('status', 'hadir')
+                ->count();
+
+            $totalPegawaiDashboard = \App\Models\Pegawai::count();
+        @endphp
+
+        <div class="dashboard-panel quick-panel">
+
+            <div class="panel-heading">
+
+                <div class="panel-icon">
+
+                    ☑
+
+                </div>
+
+                <h3>Kehadiran Pegawai Hari Ini</h3>
+
+            </div>
+
+            <p>
+
+                {{ $hadirHariIni }} dari {{ $totalPegawaiDashboard }}
+                pegawai tercatat ada di ruangan hari ini.
+
+                Data ini tampil di halaman pengunjung sebelum informasi
+                lokasi.
+
+            </p>
+
+            <div class="quick-links">
+
+                <a href="{{ route('admin.kehadiran.index') }}" class="quick-link">
+
+                    Kelola Kehadiran
+
+                </a>
+
+                <a href="{{ route('admin.laporan.index', ['jenis_laporan' => 'mingguan']) }}" class="quick-link light">
+
+                    Laporan Mingguan
+
+                </a>
+
+            </div>
 
         </div>
 

@@ -598,10 +598,10 @@
                     <div class="icon">🕒</div>
 
                     <div class="info-text">
-                        <h3>Jam Pelayanan</h3>
+                        <h3>Jam Operasional</h3>
                         <p>
-                            Senin - Jumat<br>
-                            08.00 - 16.00 WIB
+                            Senin - Kamis: 07.30 - 15.30 WIB<br>
+                            Jumat: 07.30 - 16.00 WIB
                         </p>
                     </div>
 
@@ -659,7 +659,7 @@
         <!-- TOMBOL NAVIGASI -->
         <div class="navigation">
 
-            <a href="{{ route('home') }}" class="btn btn-back">
+            <a href="{{ route('buku-tamu.kehadiran') }}" class="btn btn-back">
                 <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M19 12H5M11 6l-6 6 6 6"/>
                 </svg>

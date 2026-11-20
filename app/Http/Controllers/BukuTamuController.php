@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Pegawai;
 use App\Models\JanjiTemu;
+use Carbon\Carbon;
 
 class BukuTamuController extends Controller
 {
@@ -66,8 +67,11 @@ class BukuTamuController extends Controller
     // PROSES CEK KETERSEDIAAN PEGAWAI
     public function cekKetersediaan(Request $request)
     {
+        // Nilai tujuan berformat "Tujuan: rincian"
+        // (contoh: "Konsultasi: pengelolaan arsip kantor desa").
+        // Rincian maksimal 150 karakter + nama tujuan, sehingga batasnya 200.
         $validated = $request->validate([
-            'tujuan' => 'required|string|max:150',
+            'tujuan' => 'required|string|max:200',
             'pegawai_id' => 'required|exists:pegawais,id',
         ]);
 
@@ -146,7 +150,22 @@ class BukuTamuController extends Controller
 
         // Validasi data pengajuan janji temu
         $validated = $request->validate([
-            'tanggal' => 'required|date|after_or_equal:today',
+            'tanggal' => [
+                'required',
+                'date',
+                'after_or_equal:today',
+
+                // Layanan hanya Senin - Jumat (Sabtu & Minggu libur)
+                function ($attribute, $value, $fail) {
+                    try {
+                        if (Carbon::parse($value)->isWeekend()) {
+                            $fail('Layanan hanya tersedia Senin sampai Jumat. Silakan pilih hari kerja.');
+                        }
+                    } catch (\Throwable $e) {
+                        // format tanggal salah sudah ditangani aturan "date"
+                    }
+                },
+            ],
             'waktu' => [
                 'required',
                 'in:08:00 - 09:00,09:00 - 10:00,10:00 - 11:00,11:00 - 12:00',
